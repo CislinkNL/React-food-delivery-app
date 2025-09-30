@@ -58,16 +58,35 @@ const CartItem = ({ item, onClose }) => {
   // Get category display name
   const getCategoryName = (cat) => {
     const categoryMap = {
+      // 英文分类名称
       "main-dishes": "Hoofdgerechten",
       "appetizers": "Voorgerechten",
       "soups": "Soepen",
       "beverages": "Dranken",
-      "desserts": "Desserts"
-    };
-    return categoryMap[cat] || cat;
-  };
+      "desserts": "Desserts",
 
-  // Generate options display text
+      // 数字分类代码 (基于你的 Firebase 数据)
+      "Cat1": "Nigiri",
+      "Cat2": "Gunkan/Temaki",
+      "Cat3": "Maki",
+      "Cat4": "Pokebowls",
+      "Cat5": "Salade",
+      "Cat6": "Soep",
+      "Cat7": "Frisdranken",
+      "Cat8": "Warme gerechten",
+      "Cat9": "Desserts",
+      "Cat10": "Bier",
+      "Cat11": "Wijn",
+      "Cat12": "Sake",
+      "Cat13": "Whisky",
+      "Cat14": "Sterke drank",
+      "Cat15": "Speciale dranken",
+      "Cat16": "Warme dranken",
+      "Cat17": "Alcoholvrije dranken"
+    };
+
+    return categoryMap[cat] || cat;
+  };  // Generate options display text
   const getOptionsDisplay = () => {
     if (!selectedOptions || Object.keys(selectedOptions).length === 0) {
       return null;

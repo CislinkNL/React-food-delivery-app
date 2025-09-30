@@ -59,7 +59,8 @@
 
 .contact__item {
   font-size: 0.9rem;
-  color: #ecf0f1;
+  color: #fff;
+  /* 使用纯白色，确保在深色背景上清晰可见 */
   margin-bottom: 0.5rem;
   display: flex;
   align-items: center;

@@ -1,0 +1,73 @@
+{
+  "items": {
+    "1": {
+      "keuzeMenus": [
+        "pittigheid_basic",
+        "portiegrootte_standard",
+        "extra_ingredienten"
+      ]
+    },
+    "2": {
+      "keuzeMenus": [
+        "pittigheid_basic",
+        "portiegrootte_standard",
+        "bereidingswijze_vlees"
+      ]
+    },
+    "3": {
+      "keuzeMenus": [
+        "sushi_combo_opties"
+      ]
+    },
+    "4": {
+      "keuzeMenus": [
+        "drank_grootte"
+      ]
+    },
+    "5": {
+      "keuzeMenus": [
+        "pittigheid_basic",
+        "portiegrootte_standard",
+        "extra_ingredienten"
+      ]
+    },
+    "10": {
+      "keuzeMenus": [
+        "pittigheid_basic",
+        "portiegrootte_standard"
+      ]
+    },
+    "11": {
+      "keuzeMenus": [
+        "pittigheid_basic",
+        "portiegrootte_standard"
+      ]
+    },
+    "12": {
+      "keuzeMenus": [
+        "pittigheid_basic",
+        "portiegrootte_standard"
+      ]
+    },
+    "15": {
+      "keuzeMenus": [
+        "sushi_combo_opties"
+      ]
+    },
+    "16": {
+      "keuzeMenus": [
+        "sushi_combo_opties"
+      ]
+    },
+    "20": {
+      "keuzeMenus": [
+        "drank_grootte"
+      ]
+    },
+    "21": {
+      "keuzeMenus": [
+        "drank_grootte"
+      ]
+    }
+  }
+}

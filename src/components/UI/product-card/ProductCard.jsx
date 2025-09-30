@@ -7,16 +7,21 @@ import SuccessNotification from "../../SuccessNotification/SuccessNotification";
 import "../../../styles/product-card.css";
 
 const ProductCard = (props) => {
-  const { id, title, image01, price, options, desc, category } = props.item;
+  const { id, title, image01, price, options, desc, category, categoryTakeAway, keuzeMenus } = props.item;
   const dispatch = useDispatch();
+
+  // 使用 categoryTakeAway 作为主要分类，如果没有则使用 category 作为后备
+  const actualCategory = categoryTakeAway || category;
 
   const [showOptionsModal, setShowOptionsModal] = useState(false);
   const [showSuccessNotification, setShowSuccessNotification] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const [successDetails, setSuccessDetails] = useState(null);
 
-  // Check if item has options
-  const hasOptions = options && Object.keys(options).length > 0;
+  // Check if item has options (支持新旧两种格式)
+  const hasKeuzeMenus = keuzeMenus && Array.isArray(keuzeMenus) && keuzeMenus.length > 0;
+  const hasLegacyOptions = options && Object.keys(options).length > 0;
+  const hasOptions = hasKeuzeMenus || hasLegacyOptions;
 
   // Quick add to cart (no options)
   const quickAddToCart = () => {
@@ -25,7 +30,7 @@ const ProductCard = (props) => {
       title,
       image01,
       price,
-      category,
+      category: actualCategory, // 使用正确的分类字段
       desc
     };
 
@@ -44,9 +49,7 @@ const ProductCard = (props) => {
     } else {
       quickAddToCart();
     }
-  };
-
-  // Handle success from options modal
+  };  // Handle success from options modal
   const handleOptionsSuccess = (dishTitle, selectedOptions) => {
     // Generate success details from selected options
     const details = Object.values(selectedOptions)
@@ -86,7 +89,6 @@ const ProductCard = (props) => {
         <div className="product__content">
           <div className="product__img-wrapper">
             <img className="product__img" src={image01} alt={title} />
-            <div className="product__category">{getCategoryName(category)}</div>
           </div>
           <div className="product__info">
             <h5>

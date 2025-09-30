@@ -52,7 +52,8 @@ export const DatabasePaths = {
     menu: {
         dishes: process.env.REACT_APP_MENU_PATH || 'Develop/menukaart', // 直接指向menukaart，因为菜品数据就在这个节点下
         categories: process.env.REACT_APP_MENU_PATH ? `${process.env.REACT_APP_MENU_PATH}/categories` : 'Develop/menukaart/categories',
-        options: process.env.REACT_APP_MENU_PATH ? `${process.env.REACT_APP_MENU_PATH}/options` : 'Develop/menukaart/options'
+        options: process.env.REACT_APP_MENU_PATH ? `${process.env.REACT_APP_MENU_PATH}/options` : 'Develop/menukaart/options',
+        keuzeMenus: process.env.REACT_APP_KEUZE_MENUS_PATH || 'Develop/keuzeMenus' // 添加 keuzeMenus 路径
     },
 
     // 分类相关路径 (动态分类加载)

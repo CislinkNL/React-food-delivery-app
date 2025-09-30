@@ -136,6 +136,8 @@
   padding: 0.5rem 0;
   border-bottom: 1px solid #eee;
   font-size: 1rem;
+  color: #ffffff;
+  /* 与主要文本颜色保持一致 */
 }
 
 .hour__item:last-child,
@@ -146,6 +148,12 @@
 .contact__item i {
   color: #df2020;
   font-size: 1.2rem;
+}
+
+.contact__item span {
+  color: #212245;
+  /* 与主要文本颜色保持一致 */
+  font-weight: 500;
 }
 
 /* ===== Responsive Design ===== */

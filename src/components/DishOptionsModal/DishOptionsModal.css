@@ -88,10 +88,16 @@
     box-shadow: 0 4px 12px rgba(223, 32, 32, 0.2);
 }
 
-.option-item input[type="radio"] {
+.option-item input[type="radio"],
+.option-item input[type="checkbox"] {
     margin-right: 1rem;
     accent-color: #df2020;
     transform: scale(1.2);
+}
+
+.option-item input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
 }
 
 .option-content {
@@ -114,6 +120,45 @@
     padding: 0.25rem 0.75rem;
     border-radius: 20px;
     font-size: 0.9rem;
+}
+
+.option-price.discount {
+    color: #28a745;
+    background: rgba(40, 167, 69, 0.1);
+}
+
+.max-selections-info {
+    color: #6c757d;
+    font-size: 0.85rem;
+    font-weight: normal;
+    margin-left: 0.5rem;
+}
+
+.not-available-badge {
+    color: #dc3545;
+    background: rgba(220, 53, 69, 0.1);
+    padding: 0.25rem 0.5rem;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.option-item.disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    background: #f8f9fa;
+}
+
+.option-item.disabled:hover {
+    border-color: #e9ecef;
+    background: #f8f9fa;
+    transform: none;
+    box-shadow: none;
+}
+
+.validation-errors .alert {
+    margin-bottom: 0.5rem;
+    border-radius: 8px;
 }
 
 .options-modal-footer {

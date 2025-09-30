@@ -348,6 +348,7 @@ class MenuService {
             onlyRestaurant: dish.onlyRestaurant || false,
             categoryTakeAway: dish.categoryTakeAway || dish.category || this.determineCategoryFromSorting(dish.sortingNrm),
             options: dish.options || "",
+            keuzeMenus: dish.keuzeMenus || [], // 添加 keuzeMenus 字段支持
 
             // 保留原有字段
             sku: dish.sku,

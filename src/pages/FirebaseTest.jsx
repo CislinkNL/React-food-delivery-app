@@ -4,6 +4,7 @@ import { menuService } from '../services/MenuService';
 import { takeAwayOrderService } from '../services/TakeAwayOrderService';
 import { accessControlService } from '../services/AccessControlService';
 import { categoryService } from '../services/CategoryService';
+import KeuzeMenusUploadTool from '../components/KeuzeMenusUploadTool';
 
 const FirebaseTestPage = () => {
     const [testResults, setTestResults] = useState([]);
@@ -33,14 +34,14 @@ const FirebaseTestPage = () => {
     const testFirebaseConnection = async () => {
         try {
             addTestResult('Firebase连接测试', 'info', '开始测试Firebase连接...');
-            
+
             // 测试基础连接
             const testData = await menuService.getAllDishes();
-            addTestResult('Firebase连接测试', 'success', 
+            addTestResult('Firebase连接测试', 'success',
                 `Firebase连接成功，获取到 ${testData.length} 个菜品`);
-                
+
         } catch (error) {
-            addTestResult('Firebase连接测试', 'error', 
+            addTestResult('Firebase连接测试', 'error',
                 `Firebase连接失败: ${error.message}`);
         }
     };
@@ -87,10 +88,10 @@ const FirebaseTestPage = () => {
     // 运行完整测试
     const runCompleteTest = async () => {
         if (isLoading) return;
-        
+
         setIsLoading(true);
         clearResults();
-        
+
         try {
             await testFirebaseConnection();
             await testCategoriesData();
@@ -179,12 +180,11 @@ const FirebaseTestPage = () => {
                         ) : (
                             <div style={{ maxHeight: '400px', overflowY: 'auto' }}>
                                 {testResults.map((result) => (
-                                    <div 
-                                        key={result.id} 
-                                        className={`alert alert-${
-                                            result.status === 'success' ? 'success' : 
-                                            result.status === 'error' ? 'danger' : 'info'
-                                        } mb-2`}
+                                    <div
+                                        key={result.id}
+                                        className={`alert alert-${result.status === 'success' ? 'success' :
+                                                result.status === 'error' ? 'danger' : 'info'
+                                            } mb-2`}
                                     >
                                         <div className="d-flex justify-content-between align-items-start">
                                             <div>
@@ -208,6 +208,9 @@ const FirebaseTestPage = () => {
                     </Card>
                 </Col>
             </Row>
+
+            {/* KeuzeMenus 上传工具 */}
+            <KeuzeMenusUploadTool />
         </Container>
     );
 };

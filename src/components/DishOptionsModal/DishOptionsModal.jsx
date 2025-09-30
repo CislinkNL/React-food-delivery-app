@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Modal, ModalHeader, ModalBody, ModalFooter, Button, Row, Col } from 'reactstrap';
 import { useDispatch } from 'react-redux';
 import { cartActions } from '../../store/shopping-cart/cartSlice';
+import KeuzeMenuService from '../../services/KeuzeMenuService';
 import './DishOptionsModal.css';
 
 const DishOptionsModal = ({
@@ -12,58 +13,114 @@ const DishOptionsModal = ({
 }) => {
     const dispatch = useDispatch();
     const [selectedOptions, setSelectedOptions] = useState({});
+    const [keuzeMenus, setKeuzeMenus] = useState({});
     const [totalPrice, setTotalPrice] = useState(0);
     const [isAdding, setIsAdding] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+    const [validationErrors, setValidationErrors] = useState([]);
 
-    // 重置选项当弹窗打开时
+    // 加载选择菜单数据
     useEffect(() => {
-        if (isOpen && dish) {
-            setSelectedOptions({});
-            setTotalPrice(dish.price || 0);
-        }
+        const loadKeuzeMenus = async () => {
+            if (!isOpen || !dish?.keuzeMenus || dish.keuzeMenus.length === 0) {
+                setKeuzeMenus({});
+                return;
+            }
+
+            setIsLoading(true);
+            try {
+                const menuData = await KeuzeMenuService.getKeuzeMenusByIds(dish.keuzeMenus);
+                setKeuzeMenus(menuData);
+
+                // 设置默认选项
+                const defaultOptions = {};
+                Object.entries(menuData).forEach(([menuId, menu]) => {
+                    if (menu.required && menu.options) {
+                        const defaultOption = menu.options.find(opt => opt.default);
+                        if (defaultOption) {
+                            if (menu.type === 'multiple_choice') {
+                                defaultOptions[menuId] = [defaultOption.id];
+                            } else {
+                                defaultOptions[menuId] = defaultOption.id;
+                            }
+                        }
+                    }
+                });
+                setSelectedOptions(defaultOptions);
+            } catch (error) {
+                console.error('Error loading keuzeMenus:', error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        loadKeuzeMenus();
     }, [isOpen, dish]);
 
     // 计算总价格
     useEffect(() => {
-        if (!dish) return;
+        if (!dish || !keuzeMenus) return;
 
         let total = dish.price || 0;
-        Object.values(selectedOptions).forEach(option => {
-            if (option && option.price) {
-                total += option.price;
-            }
-        });
+        const optionsPrice = KeuzeMenuService.calculateOptionsPrice(keuzeMenus, selectedOptions);
+        total += optionsPrice;
         setTotalPrice(total);
-    }, [selectedOptions, dish]);
 
-    // 处理选项变更
-    const handleOptionChange = (optionType, option) => {
+        // 验证选项
+        const validation = KeuzeMenuService.validateOptionsSelection(keuzeMenus, selectedOptions);
+        setValidationErrors(validation.errors);
+    }, [selectedOptions, dish, keuzeMenus]);
+
+    // 处理单选选项变更
+    const handleSingleOptionChange = (keuzeMenuId, optionId) => {
         setSelectedOptions(prev => ({
             ...prev,
-            [optionType]: option
+            [keuzeMenuId]: optionId
         }));
     };
 
-    // 检查是否所有必需选项都已选择
-    const isAllRequiredOptionsSelected = () => {
-        if (!dish?.options) return true;
+    // 处理多选选项变更
+    const handleMultipleOptionChange = (keuzeMenuId, optionId, isChecked) => {
+        setSelectedOptions(prev => {
+            const currentSelections = prev[keuzeMenuId] || [];
+            let newSelections;
 
-        // 假设所有选项都是必需的，除非明确标记为可选
-        return Object.keys(dish.options).every(optionType => {
-            return selectedOptions[optionType] !== undefined;
+            if (isChecked) {
+                newSelections = [...currentSelections, optionId];
+            } else {
+                newSelections = currentSelections.filter(id => id !== optionId);
+            }
+
+            return {
+                ...prev,
+                [keuzeMenuId]: newSelections
+            };
         });
+    };
+
+    // 检查是否可以添加到购物车
+    const canAddToCart = () => {
+        return validationErrors.length === 0 && Object.keys(keuzeMenus).length > 0;
     };
 
     // 添加到购物车
     const handleAddToCart = async () => {
-        if (!dish || !isAllRequiredOptionsSelected()) return;
+        if (!dish || !canAddToCart()) return;
 
         setIsAdding(true);
 
         try {
+            // 生成选项显示文本
+            const optionsText = KeuzeMenuService.generateOptionsDisplayText(keuzeMenus, selectedOptions);
+
             // 创建唯一ID（包含选项信息）
             const optionsId = Object.entries(selectedOptions)
-                .map(([type, option]) => `${type}:${option.name}`)
+                .map(([menuId, selection]) => {
+                    if (Array.isArray(selection)) {
+                        return `${menuId}:${selection.join(',')}`;
+                    }
+                    return `${menuId}:${selection}`;
+                })
                 .join('|');
             const uniqueId = `${dish.id}_${Date.now()}_${optionsId}`;
 
@@ -72,15 +129,16 @@ const DishOptionsModal = ({
                 title: dish.title,
                 price: totalPrice,
                 image01: dish.image01,
-                category: dish.category,
+                category: dish.categoryTakeAway || dish.category, // 使用正确的分类字段
                 selectedOptions: selectedOptions,
+                optionsText: optionsText,
                 basePrice: dish.price,
                 baseDishId: dish.id
             }));
 
             // 调用成功回调
             if (onAddSuccess) {
-                onAddSuccess(dish.title, selectedOptions);
+                onAddSuccess(dish.title, optionsText);
             }
 
             // 短暂延迟后关闭弹窗
@@ -95,24 +153,9 @@ const DishOptionsModal = ({
         }
     };
 
-    // 获取选项类型的中文名称
-    const getOptionTypeName = (optionType) => {
-        const typeNames = {
-            spiciness: "Pittigheid",
-            size: "Portiegrootte",
-            cooking: "Bereidingswijze",
-            tofu: "Tofu Type",
-            cut: "Snijwijze",
-            consistency: "Soep Consistentie",
-            temperature: "Temperatuur",
-            sweetness: "Zoetheid",
-            ice: "IJshoeveelheid",
-            packaging: "Verpakking",
-            quantity: "Aantal",
-            filling: "Vulling",
-            dipping: "Dipsaus"
-        };
-        return typeNames[optionType] || optionType;
+    // 获取选项详情
+    const getOptionDetails = (keuzeMenu, optionId) => {
+        return keuzeMenu.options?.find(opt => opt.id === optionId);
     };
 
     if (!dish) return null;
@@ -134,37 +177,80 @@ const DishOptionsModal = ({
             </ModalHeader>
 
             <ModalBody className="options-modal-body">
-                {dish.options && Object.keys(dish.options).length > 0 ? (
+                {isLoading ? (
+                    <div className="text-center py-4">
+                        <div className="spinner-border" role="status">
+                            <span className="visually-hidden">Laden...</span>
+                        </div>
+                        <p className="mt-2">Opties laden...</p>
+                    </div>
+                ) : Object.keys(keuzeMenus).length > 0 ? (
                     <div className="options-container">
-                        {Object.entries(dish.options).map(([optionType, optionList]) => (
-                            <div key={optionType} className="option-group mb-4">
-                                <h6 className="option-group-title">
-                                    {getOptionTypeName(optionType)}
-                                    <span className="required-indicator">*</span>
-                                </h6>
-                                <div className="option-list">
-                                    {Array.isArray(optionList) ? optionList.map((option, index) => (
-                                        <label
-                                            key={index}
-                                            className={`option-item ${selectedOptions[optionType]?.name === option.name ? 'selected' : ''}`}
-                                        >
-                                            <input
-                                                type="radio"
-                                                name={optionType}
-                                                onChange={() => handleOptionChange(optionType, option)}
-                                                checked={selectedOptions[optionType]?.name === option.name}
-                                            />
-                                            <div className="option-content">
-                                                <span className="option-name">{option.name}</span>
-                                                {option.price > 0 && (
-                                                    <span className="option-price">+€{option.price.toFixed(2)}</span>
-                                                )}
-                                            </div>
-                                        </label>
-                                    )) : null}
+                        {Object.entries(keuzeMenus)
+                            .sort(([, a], [, b]) => (a.displayOrder || 0) - (b.displayOrder || 0))
+                            .map(([keuzeMenuId, keuzeMenu]) => (
+                                <div key={keuzeMenuId} className="option-group mb-4">
+                                    <h6 className="option-group-title">
+                                        {keuzeMenu.name}
+                                        {keuzeMenu.required && <span className="required-indicator">*</span>}
+                                        {keuzeMenu.type === 'multiple_choice' && keuzeMenu.maxSelections && (
+                                            <span className="max-selections-info">
+                                                (Max {keuzeMenu.maxSelections})
+                                            </span>
+                                        )}
+                                    </h6>
+                                    <div className="option-list">
+                                        {keuzeMenu.options?.map((option) => (
+                                            <label
+                                                key={option.id}
+                                                className={`option-item ${keuzeMenu.type === 'single_choice'
+                                                    ? (selectedOptions[keuzeMenuId] === option.id ? 'selected' : '')
+                                                    : (selectedOptions[keuzeMenuId]?.includes(option.id) ? 'selected' : '')
+                                                    } ${!option.available ? 'disabled' : ''}`}
+                                            >
+                                                <input
+                                                    type={keuzeMenu.type === 'single_choice' ? 'radio' : 'checkbox'}
+                                                    name={keuzeMenu.type === 'single_choice' ? keuzeMenuId : undefined}
+                                                    disabled={!option.available}
+                                                    onChange={(e) => {
+                                                        if (keuzeMenu.type === 'single_choice') {
+                                                            handleSingleOptionChange(keuzeMenuId, option.id);
+                                                        } else {
+                                                            handleMultipleOptionChange(keuzeMenuId, option.id, e.target.checked);
+                                                        }
+                                                    }}
+                                                    checked={
+                                                        keuzeMenu.type === 'single_choice'
+                                                            ? selectedOptions[keuzeMenuId] === option.id
+                                                            : selectedOptions[keuzeMenuId]?.includes(option.id) || false
+                                                    }
+                                                />
+                                                <div className="option-content">
+                                                    <span className="option-name">{option.name}</span>
+                                                    {option.price !== undefined && option.price !== 0 && (
+                                                        <span className={`option-price ${option.price < 0 ? 'discount' : ''}`}>
+                                                            {option.price > 0 ? '+' : ''}€{option.price.toFixed(2)}
+                                                        </span>
+                                                    )}
+                                                    {!option.available && (
+                                                        <span className="not-available-badge">Niet beschikbaar</span>
+                                                    )}
+                                                </div>
+                                            </label>
+                                        ))}
+                                    </div>
                                 </div>
+                            ))}
+
+                        {validationErrors.length > 0 && (
+                            <div className="validation-errors mt-3">
+                                {validationErrors.map((error, index) => (
+                                    <div key={index} className="alert alert-warning small py-2">
+                                        {error}
+                                    </div>
+                                ))}
                             </div>
-                        ))}
+                        )}
                     </div>
                 ) : (
                     <div className="text-center py-4">
@@ -196,7 +282,7 @@ const DishOptionsModal = ({
                         <Button
                             color="primary"
                             onClick={handleAddToCart}
-                            disabled={!isAllRequiredOptionsSelected() || isAdding}
+                            disabled={!canAddToCart() || isAdding}
                             className="add-to-cart-btn"
                         >
                             {isAdding ? (
