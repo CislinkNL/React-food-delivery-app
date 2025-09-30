@@ -65,7 +65,8 @@
 
 .menu__category-sticky {
     position: sticky;
-    top: 0;
+    top: 100px;
+    /* 导航栏高度 */
     background: #f8f9fa;
     padding: 1rem 0;
     z-index: 100;
@@ -73,6 +74,7 @@
     margin: 0 -15px;
     padding-left: 15px;
     padding-right: 15px;
+    transition: top 0.3s ease;
 }
 
 .menu__category-scroll {
@@ -472,6 +474,15 @@
     .menu__category-sticky {
         margin: 0 -15px;
         padding: 1rem 15px;
+        top: 100px;
+        /* 默认导航栏高度 */
+    }
+
+    /* 当导航栏收缩时调整位置 */
+    .header__shrink~.menu-section .menu__category-sticky,
+    body.header-shrink .menu__category-sticky {
+        top: 80px;
+        /* 收缩后的导航栏高度 */
     }
 
     .menu__category-btn {
@@ -488,6 +499,15 @@
 @media only screen and (max-width: 576px) {
     .menu__category-sticky {
         padding: 0.8rem 10px;
+        top: 100px;
+        /* 默认导航栏高度 */
+    }
+
+    /* 当导航栏收缩时调整位置 */
+    .header__shrink~.menu-section .menu__category-sticky,
+    body.header-shrink .menu__category-sticky {
+        top: 80px;
+        /* 收缩后的导航栏高度 */
     }
 
     .menu__category-btn {
@@ -503,5 +523,93 @@
     .pagination__btn {
         padding: 0.6rem 1rem;
         font-size: 0.8rem;
+    }
+}
+
+/* ===== Search Widget Styles ===== */
+.search__widget {
+    position: relative;
+    margin-bottom: 1rem;
+}
+
+.search__widget input {
+    width: 100%;
+    max-width: 500px;
+    padding: 12px 20px;
+    border: 2px solid #ddd;
+    border-radius: 25px;
+    font-size: 16px;
+    outline: none;
+    transition: all 0.3s ease;
+    background: white !important;
+    color: #333 !important;
+    z-index: 1;
+    position: relative;
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    min-width: 280px;
+    /* 确保最小宽度 */
+}
+
+.search__widget input:focus {
+    border-color: #df2020;
+    box-shadow: 0 0 0 3px rgba(223, 32, 32, 0.1);
+}
+
+.search__widget input::placeholder {
+    color: #999 !important;
+    opacity: 1 !important;
+}
+
+/* 隐藏浏览器默认的搜索清除按钮 */
+.search__widget input::-webkit-search-cancel-button,
+.search__widget input::-webkit-search-decoration {
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.search__widget input::-ms-clear {
+    display: none;
+}
+
+.search__widget span {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #666;
+    font-size: 18px;
+    transition: all 0.3s ease;
+    user-select: none;
+    z-index: 2;
+}
+
+.search__widget span:hover {
+    color: #df2020;
+}
+
+.search__widget span[style*="pointer"] {
+    cursor: pointer !important;
+}
+
+.search__widget span[style*="pointer"]:hover {
+    color: #df2020 !important;
+    transform: translateY(-50%) scale(1.1);
+}
+
+@media (max-width: 768px) {
+    .search__widget {
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 0 15px;
+    }
+
+    .search__widget input {
+        max-width: 100% !important;
+        min-width: 250px;
+        font-size: 16px;
+        /* 防止移动端自动缩放 */
+        padding: 12px 20px;
     }
 }

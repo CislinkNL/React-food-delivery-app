@@ -1,112 +1,91 @@
 import React, { useState, useEffect } from "react";
-import products from "../assets/fake-data/products";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import Helmet from "../components/Helmet/Helmet";
 import CommonSection from "../components/UI/common-section/CommonSection";
 import { Container, Row, Col } from "reactstrap";
-import ExtraIngredient from '../components/ExtraIngredient/ExtraIngredient.jsx';
 import { useDispatch } from "react-redux";
 import { cartActions } from "../store/shopping-cart/cartSlice";
-import { useSelector } from "react-redux";
 import DishOptionsModal from "../components/DishOptionsModal/DishOptionsModal";
 import SuccessNotification from "../components/SuccessNotification/SuccessNotification";
+import { menuService } from "../services/MenuService";
+import { categoryService } from "../services/CategoryService";
 import "../styles/product-details.css";
 import "../styles/product-card.css";
-import ProductCard from "../components/UI/product-card/ProductCard";
-
-const ExtraIngredients = {
-  MUSHROOMS: "Mushrooms",
-  ONION: "Onion",
-  PEPPER: "Pepper",
-  PINAPPLE: "Pinapple",
-  TUNA: "Tuna",
-  MEAT: "Meat",
-  CHEESE: "Cheese",
-  HOTSAUCE: "Hot Sauce",
-  CORN: "Corn"
-};
 
 const PizzaDetails = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-  // All useState hooks must be at the top
-  const [extraIngredients, setExtraIngredients] = useState([]);
+  // State management
+  const [dish, setDish] = useState(null);
+  const [categoryName, setCategoryName] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [showOptionsModal, setShowOptionsModal] = useState(false);
   const [showSuccessNotification, setShowSuccessNotification] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const [successDetails, setSuccessDetails] = useState(null);
   const [previewImg, setPreviewImg] = useState("");
 
-  const cartProducts = useSelector((state) => state.cart.cartItems);
-  const product = products.find((product) => product.id === id);
-
-  // All useEffect hooks must be before any early returns
+  // Load dish data from Firebase
   useEffect(() => {
-    if (product && product.image01) {
-      setPreviewImg(product.image01);
-    }
-  }, [product]);
+    const loadDishDetails = async () => {
+      try {
+        setLoading(true);
+        setError(null);
 
-  useEffect(() => {
-    const existingPizza = cartProducts.find(item => item.id === id);
-    if (existingPizza) {
-      setExtraIngredients(existingPizza.extraIngredients || []);
-    } else {
-      setExtraIngredients([]);
-    }
-  }, [cartProducts, id]);
+        // Get all dishes and find the one with matching ID
+        const allDishes = await menuService.getAllDishes();
+        const foundDish = allDishes.find(dish => String(dish.id) === String(id));
 
+        if (foundDish) {
+          setDish(foundDish);
+          setPreviewImg(foundDish.image01);
+
+          // Load category name
+          if (foundDish.categoryTakeAway || foundDish.category) {
+            const categoryId = foundDish.categoryTakeAway || foundDish.category;
+            const categoryInfo = await categoryService.getCategoryById(categoryId);
+            if (categoryInfo) {
+              setCategoryName(categoryInfo.name);
+            } else {
+              setCategoryName(categoryId); // 备用显示原始ID
+            }
+          }
+        } else {
+          setError('Gerecht niet gevonden');
+        }
+      } catch (err) {
+        console.error('Fout bij laden gerecht details:', err);
+        setError('Kon gerecht niet laden');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (id) {
+      loadDishDetails();
+    }
+  }, [id]);
+
+  // Auto-hide success notification
   useEffect(() => {
     if (showSuccessNotification) {
       const timer = setTimeout(() => {
         setShowSuccessNotification(false);
-      }, 1500);
+      }, 3000);
       return () => clearTimeout(timer);
     }
   }, [showSuccessNotification]);
 
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [product]);
+  // Check if dish has options (支持新旧两种格式)
+  const hasKeuzeMenus = dish && dish.keuzeMenus && Array.isArray(dish.keuzeMenus) && dish.keuzeMenus.length > 0;
+  const hasLegacyOptions = dish && dish.options && Object.keys(dish.options).length > 0;
+  const hasOptions = hasKeuzeMenus || hasLegacyOptions;
 
-  // Early return if product not found
-  if (!product) {
-    return (
-      <Helmet title="Product Niet Gevonden">
-        <CommonSection title="Product Niet Gevonden" />
-        <Container>
-          <Row>
-            <Col lg="12" className="text-center">
-              <h4>Product niet gevonden</h4>
-              <p>Het product dat u zoekt bestaat niet.</p>
-            </Col>
-          </Row>
-        </Container>
-      </Helmet>
-    );
-  }
-
-  const { title, price, category, desc, image01, options } = product;
-  const relatedProduct = products.filter((item) => category === item.category);
-  const hasOptions = options && Object.keys(options).length > 0;
-
-  const quickAddToCart = () => {
-    const cartItem = {
-      id: String(id),
-      title,
-      price,
-      image01,
-      category,
-      extraIngredients
-    };
-    dispatch(cartActions.addItem(cartItem));
-    setSuccessMessage(`"${title}" toegevoegd aan winkelwagen`);
-    setSuccessDetails(null);
-    setShowSuccessNotification(true);
-  };
-
-  const addItem = () => {
+  // Handle add to cart with options
+  const handleAddToCart = () => {
     if (hasOptions) {
       setShowOptionsModal(true);
     } else {
@@ -114,95 +93,164 @@ const PizzaDetails = () => {
     }
   };
 
-  const handleOptionsSuccess = (dishTitle, selectedOptions) => {
-    const details = Object.values(selectedOptions)
-      .filter(option => option && option.name)
-      .map(option => option.name);
-    setSuccessMessage(`"${dishTitle}" toegevoegd aan winkelwagen`);
-    setSuccessDetails(details.length > 0 ? details : null);
+  // Quick add to cart (no options)
+  const quickAddToCart = () => {
+    if (!dish) return;
+
+    const cartItem = {
+      id: String(dish.id),
+      title: dish.title,
+      image01: dish.image01,
+      price: dish.price,
+      category: dish.categoryTakeAway || dish.category,
+      desc: dish.desc
+    };
+
+    dispatch(cartActions.addItem(cartItem));
+    setSuccessMessage(`${dish.title} toegevoegd aan winkelwagen!`);
     setShowSuccessNotification(true);
   };
 
-  function updateExtraIngredients(ingredient) {
-    if (extraIngredients.includes(ingredient)) {
-      setExtraIngredients(extraIngredients.filter(item => item !== ingredient));
-    } else {
-      setExtraIngredients(previousState => [...previousState, ingredient]);
-    }
+  // Handle modal success
+  const handleModalSuccess = (message, details) => {
+    setSuccessMessage(message);
+    setSuccessDetails(details);
+    setShowSuccessNotification(true);
+    setShowOptionsModal(false);
+  };
+
+  // Handle back navigation
+  const handleGoBack = () => {
+    navigate(-1); // 返回上一页
+  };
+
+  // Loading state
+  if (loading) {
+    return (
+      <Helmet title="Laden...">
+        <CommonSection title="Gerecht Details" />
+        <Container>
+          <Row>
+            <Col lg="12" className="text-center">
+              <div className="spinner-border text-primary" role="status">
+                <span className="visually-hidden">Laden...</span>
+              </div>
+              <p className="mt-2">Gerecht laden...</p>
+            </Col>
+          </Row>
+        </Container>
+      </Helmet>
+    );
+  }
+
+  // Error state
+  if (error || !dish) {
+    return (
+      <Helmet title="Gerecht Niet Gevonden">
+        <CommonSection title="Gerecht Niet Gevonden" />
+        <Container>
+          <Row>
+            <Col lg="12" className="text-center">
+              <h4>Gerecht niet gevonden</h4>
+              <p>{error || 'Het gerecht dat u zoekt bestaat niet.'}</p>
+              <button
+                className="btn btn-primary mt-3"
+                onClick={() => window.history.back()}
+              >
+                Terug naar menu
+              </button>
+            </Col>
+          </Row>
+        </Container>
+      </Helmet>
+    );
   }
 
   return (
-    <Helmet title="Product-details">
-      <CommonSection title={title} />
+    <Helmet title={dish.title || "Gerecht Details"}>
+      <CommonSection title={dish.title || "Gerecht Details"} />
       <section>
         <Container>
+          {/* 返回按钮 */}
+          <Row className="mb-4">
+            <Col lg="12">
+              <button
+                className="btn btn-outline-primary"
+                onClick={handleGoBack}
+                style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+              >
+                <i className="ri-arrow-left-line"></i>
+                Terug
+              </button>
+            </Col>
+          </Row>
+
           <Row>
-            <Col lg="2" md="2">
-              <div className="product__images">
-                <div className="img__item mb-3" onClick={() => setPreviewImg(product.image01)}>
-                  <img src={product.image01 || ""} alt="" className="w-50" />
-                </div>
-                <div className="img__item mb-3" onClick={() => setPreviewImg(product.image02)}>
-                  <img src={product.image02 || ""} alt="" className="w-50" />
-                </div>
-                <div className="img__item" onClick={() => setPreviewImg(product.image03)}>
-                  <img src={product.image03 || ""} alt="" className="w-50" />
-                </div>
-              </div>
-            </Col>
-            <Col lg="4" md="4">
+            <Col lg="6" md="6">
               <div className="product__main-img">
-                <img src={previewImg} alt="" className="w-100" />
+                <img src={previewImg || dish.image01} alt={dish.title} className="w-100" />
               </div>
             </Col>
+
             <Col lg="6" md="6">
               <div className="single__product-content">
-                <h2 className="product__title mb-3">{title}</h2>
-                <p className="product__price">Prijs: <span>€{price.toFixed(2)}</span></p>
-                <p className="category mb-5">Categorie: <span>{category}</span></p>
-                <button onClick={addItem} className="addTOCART__btn">
-                  {cartProducts.find(item => item.id === id) ? 'Winkelwagen Bijwerken' :
-                    hasOptions ? 'Opties Kiezen' : 'Toevoegen'}
+                <h2 className="product__title mb-3">{dish.title}</h2>
+                <p className="product__price mb-4">Prijs: <span>€{dish.price.toFixed(2)}</span></p>
+                <p className="category mb-3">
+                  <span>Categorie: <span>{categoryName || dish.categoryTakeAway || dish.category}</span></span>
+                </p>
+
+                <div className="product__desc mb-4">
+                  <h6>Beschrijving:</h6>
+                  <div dangerouslySetInnerHTML={{ __html: dish.desc }} />
+                </div>
+
+                {/* 过敏信息 - 不显示标题，直接显示内容 */}
+                {dish.allergy && (
+                  <div className="product__allergy mb-4">
+                    <div
+                      style={{
+                        backgroundColor: '#fff3cd',
+                        border: '1px solid #ffeaa7',
+                        padding: '0.75rem',
+                        borderRadius: '4px',
+                        color: '#856404'
+                      }}
+                      dangerouslySetInnerHTML={{ __html: dish.allergy }}
+                    />
+                  </div>
+                )}
+
+                {hasOptions && (
+                  <div className="product__options-info mb-4">
+                    <i className="ri-settings-3-line"></i>
+                    <span>Dit gerecht heeft keuzemenu's beschikbaar</span>
+                  </div>
+                )}
+
+                <button
+                  className="addTOCart__btn"
+                  onClick={handleAddToCart}
+                >
+                  {hasOptions ? 'Opties Kiezen' : 'Toevoegen aan winkelwagen'}
                 </button>
               </div>
             </Col>
-            <Col lg='12'>
-              <div className="extraIngredientsGrid">
-                {(Object.values(ExtraIngredients)).map((ingredient) => {
-                  return (
-                    <ExtraIngredient
-                      isChecked={extraIngredients.includes(ingredient)}
-                      key={ingredient}
-                      onSelect={ingredient => updateExtraIngredients(ingredient)}
-                      ingredient={ingredient}
-                    />
-                  );
-                })}
-              </div>
-            </Col>
-            <Col lg="12">
-              <h6 className="description">Beschrijving</h6>
-              <div className="description__content">
-                <p>{desc}</p>
-              </div>
-            </Col>
-            <Col lg="12" className="mb-5 mt-4">
-              <h2 className="related__Product-title">Misschien vindt u dit ook leuk</h2>
-            </Col>
-            {relatedProduct.map((item) => (
-              <Col lg="3" md="4" sm="6" xs="6" className="mb-4" key={item.id}>
-                <ProductCard item={item} />
-              </Col>
-            ))}
           </Row>
         </Container>
       </section>
-      <DishOptionsModal
-        isOpen={showOptionsModal}
-        toggle={() => setShowOptionsModal(false)}
-        dish={product}
-        onAddSuccess={handleOptionsSuccess}
-      />
+
+      {/* Options Modal */}
+      {showOptionsModal && (
+        <DishOptionsModal
+          dish={dish}
+          isOpen={showOptionsModal}
+          onClose={() => setShowOptionsModal(false)}
+          onSuccess={handleModalSuccess}
+        />
+      )}
+
+      {/* Success Notification */}
       <SuccessNotification
         isVisible={showSuccessNotification}
         message={successMessage}

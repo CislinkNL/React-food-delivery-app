@@ -9,7 +9,7 @@ import "../../../styles/product-card.css";
 const ProductCard = (props) => {
   const { id, title, image01, price, options, desc, category, categoryTakeAway, keuzeMenus } = props.item;
   const dispatch = useDispatch();
-  
+
   // 获取购物车状态
   const cartItems = useSelector(state => state.cart.cartItems);
 
@@ -29,7 +29,10 @@ const ProductCard = (props) => {
   // 计算当前商品在购物车中的总数量（包括所有变体）
   const getItemQuantityInCart = () => {
     return cartItems
-      .filter(cartItem => cartItem.id === String(id))
+      .filter(cartItem => {
+        const cartItemBaseId = String(cartItem.id).split('_')[0];
+        return cartItemBaseId === String(id);
+      })
       .reduce((total, item) => total + item.quantity, 0);
   };
 
@@ -82,17 +85,18 @@ const ProductCard = (props) => {
 
   // 减少数量
   const decreaseQuantity = () => {
-    // 找到购物车中该商品的最后一个实例
-    const lastItem = cartItems
-      .filter(cartItem => cartItem.id === String(id))
-      .pop();
-    
+    // 找到购物车中该商品的最后一个实例（基于baseId匹配）
+    const matchingItems = cartItems.filter(cartItem => {
+      const cartItemBaseId = String(cartItem.id).split('_')[0];
+      return cartItemBaseId === String(id);
+    });
+
+    const lastItem = matchingItems[matchingItems.length - 1];
+
     if (lastItem) {
-      dispatch(cartActions.removeItem({
-        id: lastItem.id,
-        optionSignature: lastItem.optionSignature || "no-options"
-      }));
-      
+      // removeItem只需要ID字符串
+      dispatch(cartActions.removeItem(lastItem.id));
+
       // 显示移除通知
       setSuccessMessage(`"${title}" 数量已减少`);
       setSuccessDetails(null);
@@ -144,20 +148,20 @@ const ProductCard = (props) => {
         </div>
         <div className="d-flex flex-column align-items-center justify-content-between">
           <span className="product__price mb-2">€{price.toFixed(2)}</span>
-          
+
           {/* 根据商品状态显示不同的控件 */}
           {itemQuantityInCart > 0 && !hasOptions ? (
             // 显示数量控制器（仅适用于无选项商品）
             <div className="product__quantity-controls d-flex align-items-center gap-2">
-              <button 
-                className="quantity__btn decrease__btn" 
+              <button
+                className="quantity__btn decrease__btn"
                 onClick={decreaseQuantity}
               >
                 <i className="ri-subtract-line"></i>
               </button>
               <span className="quantity__display">{itemQuantityInCart}</span>
-              <button 
-                className="quantity__btn increase__btn" 
+              <button
+                className="quantity__btn increase__btn"
                 onClick={increaseQuantity}
               >
                 <i className="ri-add-line"></i>

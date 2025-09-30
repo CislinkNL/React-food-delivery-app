@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Container, Row, Col } from "reactstrap";
 import Helmet from "../components/Helmet/Helmet";
 import ProductCard from "../components/UI/product-card/ProductCard";
@@ -9,7 +9,6 @@ import "../styles/menu.css";
 // Import Firebase services
 import { menuService } from "../services/MenuService";
 import { categoryService } from "../services/CategoryService";
-import { categoryDebugger } from "../utils/CategoryDebugger";
 
 const Menu = () => {
     const [activeCategory, setActiveCategory] = useState("all");
@@ -19,15 +18,30 @@ const Menu = () => {
     const [menuLoading, setMenuLoading] = useState(true);
     const [categoriesLoading, setCategoriesLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [searchTerm, setSearchTerm] = useState(""); // 添加搜索状态
+    const searchInputRef = useRef(null); // 搜索输入框引用
 
     // 分页配置 - 每页最多25个
     const dishesPerPage = 25;
     const pagesVisited = pageNumber * dishesPerPage;
-    const displayDishes = menuData.slice(pagesVisited, pagesVisited + dishesPerPage);
-    const pageCount = Math.ceil(menuData.length / dishesPerPage);
 
-    // 计算整体加载状态
-    const loading = menuLoading || categoriesLoading;
+    // 过滤菜单数据（先按类别过滤，再按搜索词过滤）
+    const filteredMenuData = menuData.filter(dish => {
+        // 类别过滤
+        const categoryMatch = activeCategory === "all" ||
+            dish.categoryTakeAway === activeCategory ||
+            dish.category === activeCategory;
+
+        // 搜索词过滤
+        const searchMatch = searchTerm === "" ||
+            dish.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            dish.desc.toLowerCase().includes(searchTerm.toLowerCase());
+
+        return categoryMatch && searchMatch;
+    });
+
+    const displayDishes = filteredMenuData.slice(pagesVisited, pagesVisited + dishesPerPage);
+    const pageCount = Math.ceil(filteredMenuData.length / dishesPerPage);
 
     // 加载分类数据
     useEffect(() => {
@@ -157,32 +171,91 @@ const Menu = () => {
         <Helmet title="Menu">
             <section className="menu-section">
                 <Container>
+                    {/* 标题行 */}
                     <Row>
-                        <Col lg="6" md="6" sm="6" xs="12">
-                            <div className="menu__search d-flex align-items-center justify-content-between">
+                        <Col lg="12">
+                            <div className="menu__search d-flex align-items-center justify-content-center">
                                 <div className="menu__search-title">
                                     <h2>Kies je favoriete gerechten</h2>
                                 </div>
                             </div>
                         </Col>
+                    </Row>
 
-                        <Col lg="6" md="6" sm="6" xs="12">
-                            <div className="search__widget d-flex align-items-center justify-content-end">
+                    {/* 搜索框行 - 更靠近分类栏 */}
+                    <Row className="mt-3 mb-2">
+                        <Col lg="12" className="d-flex justify-content-center">
+                            <div className="search__widget d-flex align-items-center" style={{ width: '100%', maxWidth: '500px' }}>
                                 <input
-                                    type="search"
+                                    ref={searchInputRef}
+                                    type="text"
                                     placeholder="Zoek gerechten..."
-                                    value=""
-                                    onChange={() => { }}
+                                    value={searchTerm}
+                                    style={{
+                                        width: '100%',
+                                        maxWidth: '500px',
+                                        padding: '12px 20px',
+                                        border: '2px solid #ddd',
+                                        borderRadius: '25px',
+                                        fontSize: '16px',
+                                        outline: 'none',
+                                        background: 'white',
+                                        color: '#333',
+                                        display: 'block',
+                                        visibility: 'visible',
+                                        opacity: 1,
+                                        zIndex: 1
+                                    }}
+                                    onChange={(e) => {
+                                        setSearchTerm(e.target.value);
+                                        setPageNumber(0); // 重置到第一页
+                                    }}
                                 />
-                                <span>
-                                    <i className="ri-search-line"></i>
+                                <span
+                                    style={{
+                                        cursor: 'pointer',
+                                        padding: '5px',
+                                        marginLeft: '5px',
+                                        transition: 'all 0.3s ease'
+                                    }}
+                                    onClick={() => {
+                                        if (searchTerm) {
+                                            // 如果有搜索词，清除搜索
+                                            setSearchTerm('');
+                                            setPageNumber(0);
+                                        } else {
+                                            // 如果没有搜索词，聚焦到搜索框
+                                            searchInputRef.current?.focus();
+                                        }
+                                    }}
+                                    onMouseEnter={(e) => {
+                                        e.target.style.transform = 'scale(1.1)';
+                                        e.target.style.color = '#df2020';
+                                    }}
+                                    onMouseLeave={(e) => {
+                                        e.target.style.transform = 'scale(1)';
+                                        e.target.style.color = '#666';
+                                    }}
+                                >
+                                    <i className={searchTerm ? "ri-close-line" : "ri-search-line"}></i>
                                 </span>
                             </div>
                         </Col>
                     </Row>
 
+                    {/* 搜索结果提示 */}
+                    {searchTerm && (
+                        <Row>
+                            <Col lg="12" className="text-center">
+                                <div style={{ fontSize: '12px', color: '#666', marginBottom: '10px' }}>
+                                    搜索 "{searchTerm}" - 找到 {filteredMenuData.length} 个结果
+                                </div>
+                            </Col>
+                        </Row>
+                    )}
+
                     {/* Categorie filter - 移动端友好的横向滚动 */}
-                    <Row className="mt-4">
+                    <Row className="mt-2">
                         <Col lg="12">
                             {categoriesLoading ? (
                                 <div className="menu__category-loading d-flex align-items-center justify-content-center">
@@ -296,7 +369,7 @@ const Menu = () => {
                                                         Pagina {pageNumber + 1} van {pageCount}
                                                     </span>
                                                     <span className="pagination__total">
-                                                        ({displayDishes.length} van {menuData.length} gerechten)
+                                                        ({displayDishes.length} van {filteredMenuData.length} gerechten{searchTerm ? ` (gefilterd van ${menuData.length})` : ''})
                                                     </span>
                                                 </div>
                                                 <div className="pagination__controls">
