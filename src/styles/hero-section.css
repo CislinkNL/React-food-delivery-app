@@ -122,6 +122,15 @@
   background: #f8f9fa;
 }
 
+.hours__content,
+.contact__info {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 15px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  height: 100%;
+}
+
 .hours__content h3,
 .contact__info h3 {
   color: #2c3e50;
@@ -133,16 +142,28 @@
 
 .hour__item,
 .contact__item {
-  padding: 0.5rem 0;
+  padding: 0.8rem 0;
   border-bottom: 1px solid #eee;
   font-size: 1rem;
-  color: #ffffff;
-  /* 与主要文本颜色保持一致 */
+  color: #2c3e50;
+  /* 修复字体颜色 */
+  font-weight: 500;
 }
 
 .hour__item:last-child,
 .contact__item:last-child {
   border-bottom: none;
+}
+
+.hour__item span:first-child {
+  color: #666;
+  /* 左侧标签颜色 */
+}
+
+.hour__item span:last-child {
+  color: #df2020;
+  /* 右侧时间颜色 */
+  font-weight: 600;
 }
 
 .contact__item i {
@@ -151,8 +172,8 @@
 }
 
 .contact__item span {
-  color: #212245;
-  /* 与主要文本颜色保持一致 */
+  color: #2c3e50;
+  /* 修复字体颜色 */
   font-weight: 500;
 }
 
