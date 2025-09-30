@@ -1,0 +1,286 @@
+/* DishOptionsModal.css */
+
+.dish-options-modal .modal-content {
+    border-radius: 15px;
+    border: none;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.options-modal-header {
+    background: linear-gradient(135deg, #df2020 0%, #ff4757 100%);
+    color: white;
+    border-radius: 15px 15px 0 0;
+    border-bottom: none;
+    padding: 1.5rem;
+}
+
+.options-modal-header .btn-close {
+    filter: invert(1);
+}
+
+.dish-thumbnail {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 10px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.options-modal-body {
+    padding: 2rem;
+    max-height: 60vh;
+    overflow-y: auto;
+}
+
+.options-container {
+    max-width: 100%;
+}
+
+.option-group {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 1.5rem;
+    border: 1px solid #e9ecef;
+}
+
+.option-group-title {
+    color: #2c3e50;
+    font-weight: 600;
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.required-indicator {
+    color: #df2020;
+    font-weight: bold;
+}
+
+.option-list {
+    display: grid;
+    gap: 0.75rem;
+}
+
+.option-item {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    background: white;
+    border: 2px solid #e9ecef;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin: 0;
+}
+
+.option-item:hover {
+    border-color: #df2020;
+    background: #fff5f5;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(223, 32, 32, 0.1);
+}
+
+.option-item.selected {
+    border-color: #df2020;
+    background: linear-gradient(135deg, #fff5f5 0%, #ffe8e8 100%);
+    box-shadow: 0 4px 12px rgba(223, 32, 32, 0.2);
+}
+
+.option-item input[type="radio"] {
+    margin-right: 1rem;
+    accent-color: #df2020;
+    transform: scale(1.2);
+}
+
+.option-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.option-name {
+    font-size: 1rem;
+    color: #2c3e50;
+    font-weight: 500;
+}
+
+.option-price {
+    color: #df2020;
+    font-weight: 600;
+    background: rgba(223, 32, 32, 0.1);
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+}
+
+.options-modal-footer {
+    background: #f8f9fa;
+    border-radius: 0 0 15px 15px;
+    border-top: 1px solid #e9ecef;
+    padding: 1.5rem 2rem;
+}
+
+.price-info {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.total-price-label {
+    font-size: 1.1rem;
+    color: #2c3e50;
+    font-weight: 500;
+}
+
+.total-price {
+    font-size: 1.4rem;
+    color: #df2020;
+    font-weight: 700;
+}
+
+.base-price {
+    font-size: 0.9rem;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.add-to-cart-btn {
+    background: linear-gradient(135deg, #df2020 0%, #ff4757 100%);
+    border: none;
+    border-radius: 25px;
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    min-width: 180px;
+}
+
+.add-to-cart-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(223, 32, 32, 0.3);
+}
+
+.add-to-cart-btn:disabled {
+    opacity: 0.6;
+    transform: none;
+    box-shadow: none;
+}
+
+/* 成功动画 */
+@keyframes addSuccess {
+    0% {
+        transform: scale(1);
+        background: linear-gradient(135deg, #df2020 0%, #ff4757 100%);
+    }
+
+    50% {
+        transform: scale(1.05);
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    }
+
+    100% {
+        transform: scale(1);
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    }
+}
+
+.add-to-cart-btn.success {
+    animation: addSuccess 0.5s ease;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .dish-options-modal .modal-dialog {
+        margin: 1rem;
+        max-width: calc(100% - 2rem);
+    }
+
+    .options-modal-header {
+        padding: 1rem;
+    }
+
+    .dish-thumbnail {
+        width: 50px;
+        height: 50px;
+    }
+
+    .options-modal-body {
+        padding: 1rem;
+        max-height: 50vh;
+    }
+
+    .option-group {
+        padding: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .option-item {
+        padding: 0.75rem;
+    }
+
+    .options-modal-footer {
+        padding: 1rem;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .options-modal-footer .w-100 {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .price-info {
+        justify-content: center;
+        text-align: center;
+    }
+
+    .action-buttons {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .add-to-cart-btn {
+        flex: 1;
+        min-width: auto;
+    }
+}
+
+/* 加载动画 */
+.spinner-border-sm {
+    width: 1rem;
+    height: 1rem;
+}
+
+/* 空状态样式 */
+.options-modal-body .text-center {
+    color: #6c757d;
+}
+
+.options-modal-body .text-center p {
+    font-size: 1.1rem;
+    margin: 0;
+}
+
+/* 滚动条样式 */
+.options-modal-body::-webkit-scrollbar {
+    width: 6px;
+}
+
+.options-modal-body::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.options-modal-body::-webkit-scrollbar-thumb {
+    background: #df2020;
+    border-radius: 10px;
+}
+
+.options-modal-body::-webkit-scrollbar-thumb:hover {
+    background: #c41e3a;
+}

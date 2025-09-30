@@ -1,71 +1,72 @@
 import React, { useState } from "react";
-import { Modal, ModalBody, Button } from "reactstrap";
 import { useDispatch } from "react-redux";
 import { cartActions } from "../../../store/shopping-cart/cartSlice";
 import { Link } from "react-router-dom";
+import DishOptionsModal from "../../DishOptionsModal/DishOptionsModal";
+import SuccessNotification from "../../SuccessNotification/SuccessNotification";
 import "../../../styles/product-card.css";
 
 const ProductCard = (props) => {
   const { id, title, image01, price, options, desc, category } = props.item;
   const dispatch = useDispatch();
 
-  const [modal, setModal] = useState(false);
-  const [selectedOptions, setSelectedOptions] = useState({});
-  const [totalPrice, setTotalPrice] = useState(price);
-
-  const toggle = () => setModal(!modal);
+  const [showOptionsModal, setShowOptionsModal] = useState(false);
+  const [showSuccessNotification, setShowSuccessNotification] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
+  const [successDetails, setSuccessDetails] = useState(null);
 
   // Check if item has options
   const hasOptions = options && Object.keys(options).length > 0;
 
-  // Handle option selection
-  const handleOptionChange = (optionType, selectedOption) => {
-    const newSelectedOptions = {
-      ...selectedOptions,
-      [optionType]: selectedOption
-    };
-    setSelectedOptions(newSelectedOptions);
-
-    // Calculate new total price
-    let newPrice = price;
-    Object.values(newSelectedOptions).forEach(option => {
-      if (option && option.price) {
-        newPrice += option.price;
-      }
-    });
-    setTotalPrice(newPrice);
-  };
-
-  // Add to cart with options
-  const addToCart = () => {
+  // Quick add to cart (no options)
+  const quickAddToCart = () => {
     const cartItem = {
-      id: hasOptions ? `${String(id)}_${Date.now()}` : String(id), // Ensure ID is string
+      id: String(id), // Ensure ID is string
       title,
       image01,
-      price: totalPrice,
-      basePrice: price,
-      selectedOptions: hasOptions ? selectedOptions : {},
+      price,
       category,
       desc
     };
 
     dispatch(cartActions.addItem(cartItem));
 
+    // Show success notification
+    setSuccessMessage(`"${title}" 已添加到购物车`);
+    setSuccessDetails(null);
+    setShowSuccessNotification(true);
+  };
+
+  // Handle click on add button
+  const handleAddClick = () => {
     if (hasOptions) {
-      setModal(false);
-      setSelectedOptions({});
-      setTotalPrice(price);
+      setShowOptionsModal(true);
+    } else {
+      quickAddToCart();
     }
   };
 
-  // Quick add to cart (no options or direct add)
-  const quickAddToCart = () => {
-    if (hasOptions) {
-      toggle();
-    } else {
-      addToCart();
-    }
+  // Handle success from options modal
+  const handleOptionsSuccess = (dishTitle, selectedOptions) => {
+    // Generate success details from selected options
+    const details = Object.values(selectedOptions)
+      .filter(option => option && option.name)
+      .map(option => option.name);
+
+    setSuccessMessage(`"${dishTitle}" 已添加到购物车`);
+    setSuccessDetails(details.length > 0 ? details : null);
+    setShowSuccessNotification(true);
   };
+
+  // Auto-hide success notification
+  React.useEffect(() => {
+    if (showSuccessNotification) {
+      const timer = setTimeout(() => {
+        setShowSuccessNotification(false);
+      }, 1500);
+      return () => clearTimeout(timer);
+    }
+  }, [showSuccessNotification]);
 
   // Get category display name
   const getCategoryName = (cat) => {
@@ -101,75 +102,28 @@ const ProductCard = (props) => {
           </div>
         </div>
         <div className="d-flex flex-column align-items-center justify-content-between">
-          <span className="product__price mb-2">￥{price}</span>
-          <button className="addTOCART__btn" onClick={quickAddToCart}>
+          <span className="product__price mb-2">€{price.toFixed(2)}</span>
+          <button className="addTOCART__btn" onClick={handleAddClick}>
             {hasOptions ? "选择配置" : "加入购物车"}
           </button>
         </div>
       </div>
 
       {/* Options Modal */}
-      <Modal isOpen={modal} toggle={toggle} className="options__modal">
-        <ModalBody>
-          <div className="options__header">
-            <img src={image01} alt={title} className="options__img" />
-            <div className="options__info">
-              <h4>{title}</h4>
-              <p>{desc}</p>
-              <span className="options__base-price">基础价格: ￥{price}</span>
-            </div>
-          </div>
+      <DishOptionsModal
+        isOpen={showOptionsModal}
+        toggle={() => setShowOptionsModal(false)}
+        dish={props.item}
+        onAddSuccess={handleOptionsSuccess}
+      />
 
-          <div className="options__content">
-            {hasOptions && Object.entries(options).map(([optionType, optionList]) => {
-              const optionTypeNames = {
-                spiciness: "辣度",
-                size: "分量",
-                cooking: "烹饪方式",
-                tofu: "豆腐类型",
-                cut: "切法",
-                consistency: "汤的浓度",
-                temperature: "温度",
-                sweetness: "甜度",
-                ice: "冰量",
-                packaging: "包装方式"
-              };
-
-              return (
-                <div key={optionType} className="option__group">
-                  <h6 className="option__title">{optionTypeNames[optionType] || optionType}</h6>
-                  <div className="option__list">
-                    {optionList.map((option, index) => (
-                      <label key={index} className="option__item">
-                        <input
-                          type="radio"
-                          name={optionType}
-                          onChange={() => handleOptionChange(optionType, option)}
-                          checked={selectedOptions[optionType]?.name === option.name}
-                        />
-                        <span className="option__label">
-                          {option.name}
-                          {option.price > 0 && <span className="option__price"> (+￥{option.price})</span>}
-                        </span>
-                      </label>
-                    ))}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-
-          <div className="options__footer">
-            <div className="options__total">
-              <span>总价: ￥{totalPrice}</span>
-            </div>
-            <div className="options__actions">
-              <Button color="secondary" onClick={toggle}>取消</Button>
-              <Button color="primary" onClick={addToCart}>加入购物车</Button>
-            </div>
-          </div>
-        </ModalBody>
-      </Modal>
+      {/* Success Notification */}
+      <SuccessNotification
+        isVisible={showSuccessNotification}
+        message={successMessage}
+        details={successDetails}
+        onClose={() => setShowSuccessNotification(false)}
+      />
     </>
   );
 };

@@ -1,0 +1,176 @@
+/* SuccessNotification.css - Top Toast Style */
+
+.success-notification-toast {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9999;
+    animation: slideInFromTop 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.toast-content {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    color: white;
+    padding: 1rem 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(40, 167, 69, 0.3);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    min-width: 320px;
+    max-width: 500px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.toast-icon {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.toast-icon i {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.toast-text {
+    flex: 1;
+    min-width: 0;
+}
+
+.toast-message {
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.4;
+    display: block;
+    margin-bottom: 0.25rem;
+}
+
+.toast-details {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.detail-badge {
+    background: rgba(255, 255, 255, 0.25);
+    padding: 0.2rem 0.6rem;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.toast-close {
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.8);
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.toast-close:hover {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    transform: scale(1.1);
+}
+
+.toast-close i {
+    font-size: 16px;
+}
+
+/* 动画效果 */
+@keyframes slideInFromTop {
+    0% {
+        transform: translateX(-50%) translateY(-100px);
+        opacity: 0;
+    }
+    100% {
+        transform: translateX(-50%) translateY(0);
+        opacity: 1;
+    }
+}
+
+/* 退出动画 */
+.success-notification-toast.fade-out {
+    animation: slideOutToTop 0.3s ease forwards;
+}
+
+@keyframes slideOutToTop {
+    0% {
+        transform: translateX(-50%) translateY(0);
+        opacity: 1;
+    }
+    100% {
+        transform: translateX(-50%) translateY(-100px);
+        opacity: 0;
+    }
+}
+
+/* 响应式设计 */
+@media (max-width: 640px) {
+    .success-notification-toast {
+        top: 10px;
+        left: 10px;
+        right: 10px;
+        transform: none;
+    }
+    
+    .toast-content {
+        min-width: auto;
+        max-width: none;
+        padding: 0.875rem 1rem;
+    }
+    
+    .toast-message {
+        font-size: 0.9rem;
+    }
+    
+    .detail-badge {
+        font-size: 0.75rem;
+        padding: 0.15rem 0.5rem;
+    }
+    
+    .toast-icon,
+    .toast-close {
+        width: 28px;
+        height: 28px;
+    }
+    
+    .toast-icon i {
+        font-size: 16px;
+    }
+    
+    .toast-close i {
+        font-size: 14px;
+    }
+}
+
+/* 深色模式支持 */
+@media (prefers-color-scheme: dark) {
+    .toast-content {
+        background: linear-gradient(135deg, #198754 0%, #20c997 100%);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .detail-badge {
+        background: rgba(255, 255, 255, 0.15);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+}
