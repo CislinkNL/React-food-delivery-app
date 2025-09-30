@@ -32,7 +32,7 @@ const ProductCard = (props) => {
     dispatch(cartActions.addItem(cartItem));
 
     // Show success notification
-    setSuccessMessage(`"${title}" 已添加到购物车`);
+    setSuccessMessage(`"${title}" toegevoegd aan winkelwagen`);
     setSuccessDetails(null);
     setShowSuccessNotification(true);
   };
@@ -53,7 +53,7 @@ const ProductCard = (props) => {
       .filter(option => option && option.name)
       .map(option => option.name);
 
-    setSuccessMessage(`"${dishTitle}" 已添加到购物车`);
+    setSuccessMessage(`"${dishTitle}" toegevoegd aan winkelwagen`);
     setSuccessDetails(details.length > 0 ? details : null);
     setShowSuccessNotification(true);
   };
@@ -71,11 +71,11 @@ const ProductCard = (props) => {
   // Get category display name
   const getCategoryName = (cat) => {
     const categoryMap = {
-      "main-dishes": "主食",
-      "appetizers": "开胃菜",
-      "soups": "汤类",
-      "beverages": "饮料",
-      "desserts": "甜品"
+      "main-dishes": "Hoofdgerechten",
+      "appetizers": "Voorgerechten", 
+      "soups": "Soepen",
+      "beverages": "Dranken",
+      "desserts": "Desserts"
     };
     return categoryMap[cat] || cat;
   };
@@ -96,7 +96,7 @@ const ProductCard = (props) => {
             {hasOptions && (
               <div className="product__options-hint">
                 <i className="ri-settings-3-line"></i>
-                <span>可选配置</span>
+                <span>Opties beschikbaar</span>
               </div>
             )}
           </div>
@@ -104,7 +104,7 @@ const ProductCard = (props) => {
         <div className="d-flex flex-column align-items-center justify-content-between">
           <span className="product__price mb-2">€{price.toFixed(2)}</span>
           <button className="addTOCART__btn" onClick={handleAddClick}>
-            {hasOptions ? "选择配置" : "加入购物车"}
+            {hasOptions ? "Opties Kiezen" : "Toevoegen"}
           </button>
         </div>
       </div>

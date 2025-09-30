@@ -21,7 +21,7 @@ const Carts = () => {
       <ListGroup onClick={(event) => event.stopPropagation()} className="cart">
         {/* Header with title and close button */}
         <div className="cart__header">
-          <h5 className="cart__title">购物车</h5>
+          <h5 className="cart__title">Winkelwagen</h5>
           <div className="cart__closeButton">
             <span onClick={toggleCart}>
               <i className="ri-close-fill"></i>
@@ -32,23 +32,23 @@ const Carts = () => {
         <div className="cart__item-list">
           {cartProducts.length === 0 ? (
             <div className="cart__empty">
-              <h6 className="text-center">购物车是空的</h6>
-              <p className="text-center text-muted">添加一些美味的菜品吧！</p>
+              <h6 className="text-center">Winkelwagen is leeg</h6>
+              <p className="text-center text-muted">Voeg wat heerlijke gerechten toe!</p>
             </div>
           ) : (
             cartProducts.map((item, index) => (
-              <CartItem item={item} key={index} onClose={toggleCart}/>
+              <CartItem item={item} key={index} onClose={toggleCart} />
             ))
           )}
         </div>
 
         <div className="cart__bottom d-flex align-items-center justify-content-between">
           <h6>
-            Subtotal : <span>${totalAmount}</span>
+            Subtotaal : <span>€{totalAmount.toFixed(2)}</span>
           </h6>
           <button>
             <Link to="/checkout" onClick={toggleCart}>
-              Checkout
+              Afrekenen
             </Link>
           </button>
         </div>

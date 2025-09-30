@@ -98,19 +98,19 @@ const DishOptionsModal = ({
     // 获取选项类型的中文名称
     const getOptionTypeName = (optionType) => {
         const typeNames = {
-            spiciness: "辣度",
-            size: "分量",
-            cooking: "烹饪方式",
-            tofu: "豆腐类型",
-            cut: "切法",
-            consistency: "汤的浓度",
-            temperature: "温度",
-            sweetness: "甜度",
-            ice: "冰量",
-            packaging: "包装方式",
-            quantity: "数量",
-            filling: "馅料",
-            dipping: "蘸料"
+            spiciness: "Pittigheid",
+            size: "Portiegrootte",
+            cooking: "Bereidingswijze",
+            tofu: "Tofu Type",
+            cut: "Snijwijze",
+            consistency: "Soep Consistentie",
+            temperature: "Temperatuur",
+            sweetness: "Zoetheid",
+            ice: "IJshoeveelheid",
+            packaging: "Verpakking",
+            quantity: "Aantal",
+            filling: "Vulling",
+            dipping: "Dipsaus"
         };
         return typeNames[optionType] || optionType;
     };
@@ -168,7 +168,7 @@ const DishOptionsModal = ({
                     </div>
                 ) : (
                     <div className="text-center py-4">
-                        <p className="text-muted">此菜品暂无可选配置</p>
+                        <p className="text-muted">Dit gerecht heeft geen opties</p>
                     </div>
                 )}
             </ModalBody>
@@ -176,11 +176,11 @@ const DishOptionsModal = ({
             <ModalFooter className="options-modal-footer">
                 <div className="w-100 d-flex justify-content-between align-items-center">
                     <div className="price-info">
-                        <span className="total-price-label">总价: </span>
+                        <span className="total-price-label">Totaal: </span>
                         <span className="total-price">€{totalPrice.toFixed(2)}</span>
                         {totalPrice > dish.price && (
                             <span className="base-price text-muted ms-2">
-                                (基础价格: €{dish.price.toFixed(2)})
+                                (Basisprijs: €{dish.price.toFixed(2)})
                             </span>
                         )}
                     </div>
@@ -191,7 +191,7 @@ const DishOptionsModal = ({
                             disabled={isAdding}
                             className="me-2"
                         >
-                            取消
+                            Annuleren
                         </Button>
                         <Button
                             color="primary"
@@ -202,10 +202,10 @@ const DishOptionsModal = ({
                             {isAdding ? (
                                 <>
                                     <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                                    添加中...
+                                    Toevoegen...
                                 </>
                             ) : (
-                                `添加到购物车 - €${totalPrice.toFixed(2)}`
+                                `Toevoegen aan winkelwagen - €${totalPrice.toFixed(2)}`
                             )}
                         </Button>
                     </div>

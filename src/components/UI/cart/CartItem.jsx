@@ -58,11 +58,11 @@ const CartItem = ({ item, onClose }) => {
   // Get category display name
   const getCategoryName = (cat) => {
     const categoryMap = {
-      "main-dishes": "主食",
-      "appetizers": "开胃菜",
-      "soups": "汤类",
-      "beverages": "饮料",
-      "desserts": "甜品"
+      "main-dishes": "Hoofdgerechten",
+      "appetizers": "Voorgerechten",
+      "soups": "Soepen", 
+      "beverages": "Dranken",
+      "desserts": "Desserts"
     };
     return categoryMap[cat] || cat;
   };
@@ -92,8 +92,8 @@ const CartItem = ({ item, onClose }) => {
 
         <div className="cart__product-info w-100 d-flex align-items-center gap-4 justify-content-between">
           <div className="cart__product-details">
-            <h6 
-              className="cart__product-title" 
+            <h6
+              className="cart__product-title"
               onClick={handleItemSelection}
               style={{ cursor: 'pointer', color: '#df2020' }}
               title="点击查看产品详情"

@@ -12,19 +12,19 @@ import "../../styles/header.css";
 
 const nav__links = [
   {
-    display: "首页",
+    display: "Home",
     path: "/home",
   },
   {
-    display: "菜单",
+    display: "Menu",
     path: "/menu",
   },
   {
-    display: "购物车",
+    display: "Winkelwagen",
     path: "/cart",
   },
   {
-    display: "联系我们",
+    display: "Contact",
     path: "/contact",
   },
 ];

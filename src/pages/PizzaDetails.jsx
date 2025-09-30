@@ -73,13 +73,13 @@ const PizzaDetails = () => {
   // Early return if product not found
   if (!product) {
     return (
-      <Helmet title="Product Not Found">
-        <CommonSection title="Product Not Found" />
+      <Helmet title="Product Niet Gevonden">
+        <CommonSection title="Product Niet Gevonden" />
         <Container>
           <Row>
             <Col lg="12" className="text-center">
-              <h4>Product not found</h4>
-              <p>The product you're looking for doesn't exist.</p>
+              <h4>Product niet gevonden</h4>
+              <p>Het product dat u zoekt bestaat niet.</p>
             </Col>
           </Row>
         </Container>
@@ -101,7 +101,7 @@ const PizzaDetails = () => {
       extraIngredients
     };
     dispatch(cartActions.addItem(cartItem));
-    setSuccessMessage(`"${title}" 已添加到购物车`);
+    setSuccessMessage(`"${title}" toegevoegd aan winkelwagen`);
     setSuccessDetails(null);
     setShowSuccessNotification(true);
   };
@@ -118,7 +118,7 @@ const PizzaDetails = () => {
     const details = Object.values(selectedOptions)
       .filter(option => option && option.name)
       .map(option => option.name);
-    setSuccessMessage(`"${dishTitle}" 已添加到购物车`);
+    setSuccessMessage(`"${dishTitle}" toegevoegd aan winkelwagen`);
     setSuccessDetails(details.length > 0 ? details : null);
     setShowSuccessNotification(true);
   };
@@ -158,11 +158,11 @@ const PizzaDetails = () => {
             <Col lg="6" md="6">
               <div className="single__product-content">
                 <h2 className="product__title mb-3">{title}</h2>
-                <p className="product__price">Price: <span>€{price.toFixed(2)}</span></p>
-                <p className="category mb-5">Category: <span>{category}</span></p>
+                <p className="product__price">Prijs: <span>€{price.toFixed(2)}</span></p>
+                <p className="category mb-5">Categorie: <span>{category}</span></p>
                 <button onClick={addItem} className="addTOCART__btn">
-                  {cartProducts.find(item => item.id === id) ? 'Update Cart' :
-                    hasOptions ? 'Select Options' : 'Add to Cart'}
+                  {cartProducts.find(item => item.id === id) ? 'Winkelwagen Bijwerken' :
+                    hasOptions ? 'Opties Kiezen' : 'Toevoegen'}
                 </button>
               </div>
             </Col>
@@ -181,13 +181,13 @@ const PizzaDetails = () => {
               </div>
             </Col>
             <Col lg="12">
-              <h6 className="description">Description</h6>
+              <h6 className="description">Beschrijving</h6>
               <div className="description__content">
                 <p>{desc}</p>
               </div>
             </Col>
             <Col lg="12" className="mb-5 mt-4">
-              <h2 className="related__Product-title">You might also like</h2>
+              <h2 className="related__Product-title">Misschien vindt u dit ook leuk</h2>
             </Col>
             {relatedProduct.map((item) => (
               <Col lg="3" md="4" sm="6" xs="6" className="mb-4" key={item.id}>
