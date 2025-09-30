@@ -9,8 +9,6 @@
 
 .cart__item:hover {
   background-color: #f8f9fa;
-  cursor: pointer;
-  transform: translateX(2px);
 }
 
 .cart__item-info {

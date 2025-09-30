@@ -86,13 +86,20 @@ const CartItem = ({ item, onClose }) => {
   const optionsDisplay = getOptionsDisplay();
 
   return (
-    <ListGroupItem className="border-0 cart__item" onClick={handleItemSelection}>
+    <ListGroupItem className="border-0 cart__item">
       <div className="cart__item-info d-flex gap-4">
         <img src={image01} alt="product-img" className="cart__item-img" />
 
         <div className="cart__product-info w-100 d-flex align-items-center gap-4 justify-content-between">
           <div className="cart__product-details">
-            <h6 className="cart__product-title">{title}</h6>
+            <h6 
+              className="cart__product-title" 
+              onClick={handleItemSelection}
+              style={{ cursor: 'pointer', color: '#df2020' }}
+              title="点击查看产品详情"
+            >
+              {title}
+            </h6>
 
             {/* Category Badge */}
             <span className="cart__category-badge">{getCategoryName(category)}</span>

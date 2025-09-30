@@ -19,15 +19,22 @@ const Carts = () => {
   return (
     <div className="cart__container" onClick={toggleCart}>
       <ListGroup onClick={(event) => event.stopPropagation()} className="cart">
-        <div className="cart__closeButton">
-          <span onClick={toggleCart}>
-            <i className="ri-close-fill"></i>
-          </span>
+        {/* Header with title and close button */}
+        <div className="cart__header">
+          <h5 className="cart__title">购物车</h5>
+          <div className="cart__closeButton">
+            <span onClick={toggleCart}>
+              <i className="ri-close-fill"></i>
+            </span>
+          </div>
         </div>
 
         <div className="cart__item-list">
           {cartProducts.length === 0 ? (
-            <h6 className="text-center">No item added to the cart</h6>
+            <div className="cart__empty">
+              <h6 className="text-center">购物车是空的</h6>
+              <p className="text-center text-muted">添加一些美味的菜品吧！</p>
+            </div>
           ) : (
             cartProducts.map((item, index) => (
               <CartItem item={item} key={index} onClose={toggleCart}/>
