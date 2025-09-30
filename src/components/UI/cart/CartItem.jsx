@@ -60,7 +60,7 @@ const CartItem = ({ item, onClose }) => {
     const categoryMap = {
       "main-dishes": "Hoofdgerechten",
       "appetizers": "Voorgerechten",
-      "soups": "Soepen", 
+      "soups": "Soepen",
       "beverages": "Dranken",
       "desserts": "Desserts"
     };

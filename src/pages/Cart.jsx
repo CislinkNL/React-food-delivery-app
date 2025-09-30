@@ -12,17 +12,17 @@ const Cart = () => {
   const cartItems = useSelector((state) => state.cart.cartItems);
   const totalAmount = useSelector((state) => state.cart.totalAmount);
   return (
-    <Helmet title="Cart">
-      <CommonSection title="Your Cart" />
+    <Helmet title="Winkelwagen">
+      <CommonSection title="Uw Winkelwagen" />
       <section>
         <Container>
           <Row>
             <Col lg="12">
               {cartItems.length === 0 ? (
-                <h5 className="text-center">Your cart is empty</h5>
+                <h5 className="text-center">Uw winkelwagen is leeg</h5>
               ) : (
                 <>
-                  <h5 className="mb-5">Summary of your order</h5>
+                  <h5 className="mb-5">Overzicht van uw bestelling</h5>
                   <table className="table table-borderless mb-5 align-middle">
                     <tbody>
                       {cartItems.map((item) => (
@@ -35,16 +35,16 @@ const Cart = () => {
 
               <div className="mt-4">
                 <h6>
-                  Subtotal: $
-                  <span className="cart__subtotal">{totalAmount}</span>
+                  Subtotaal: €
+                  <span className="cart__subtotal">{totalAmount.toFixed(2)}</span>
                 </h6>
-                <p>Taxes and shipping will calculate at checkout</p>
+                <p>BTW en verzendkosten worden berekend bij afrekenen</p>
                 <div className="cart__page-btn">
                   <button className="addTOCart__btn me-4">
-                    <Link to="/pizzas">Continue Shopping</Link>
+                    <Link to="/menu">Verder Winkelen</Link>
                   </button>
                   <button className="addTOCart__btn">
-                    <Link to="/checkout">Proceed to checkout</Link>
+                    <Link to="/checkout">Afrekenen</Link>
                   </button>
                 </div>
               </div>
@@ -69,8 +69,8 @@ const Tr = (props) => {
         <img src={image01} alt="" />
       </td>
       <td className="text-center">{title}</td>
-      <td className="text-center">${price}</td>
-      <td className="text-center">{quantity}px</td>
+      <td className="text-center">€{price.toFixed(2)}</td>
+      <td className="text-center">{quantity}st</td>
       <td className="text-center cart__item-del">
         <i className="ri-delete-bin-line" onClick={deleteItem}></i>
       </td>

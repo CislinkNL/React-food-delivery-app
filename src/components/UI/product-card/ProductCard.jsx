@@ -72,7 +72,7 @@ const ProductCard = (props) => {
   const getCategoryName = (cat) => {
     const categoryMap = {
       "main-dishes": "Hoofdgerechten",
-      "appetizers": "Voorgerechten", 
+      "appetizers": "Voorgerechten",
       "soups": "Soepen",
       "beverages": "Dranken",
       "desserts": "Desserts"
