@@ -1,0 +1,232 @@
+/* ===== Contact Section Styles ===== */
+.contact__section {
+    padding: 80px 0;
+    background: #f8f9fa;
+}
+
+.contact__title {
+    font-size: 2.5rem;
+    color: #2c3e50;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.contact__subtitle {
+    font-size: 1.1rem;
+    color: #666;
+    margin-bottom: 3rem;
+}
+
+/* ===== Contact Info Styles ===== */
+.contact__info {
+    background: #fff;
+    padding: 2rem;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    height: 100%;
+}
+
+.contact__info h4 {
+    color: #2c3e50;
+    font-weight: 600;
+    border-bottom: 3px solid #df2020;
+    padding-bottom: 0.5rem;
+    display: inline-block;
+}
+
+.info__item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+}
+
+.info__icon {
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, #df2020 0%, #ff4757 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.info__icon i {
+    font-size: 1.2rem;
+    color: #fff;
+}
+
+.info__content h6 {
+    color: #2c3e50;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.info__content p {
+    color: #666;
+    margin: 0;
+    line-height: 1.6;
+}
+
+/* ===== Contact Form Styles ===== */
+.contact__form {
+    background: #fff;
+    padding: 2rem;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    height: 100%;
+}
+
+.contact__form h4 {
+    color: #2c3e50;
+    font-weight: 600;
+    border-bottom: 3px solid #df2020;
+    padding-bottom: 0.5rem;
+    display: inline-block;
+}
+
+.form__group {
+    position: relative;
+}
+
+.form__input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background: #fff;
+}
+
+.form__input:focus {
+    outline: none;
+    border-color: #df2020;
+    box-shadow: 0 0 0 0.2rem rgba(223, 32, 32, 0.1);
+}
+
+.form__input::placeholder {
+    color: #999;
+}
+
+textarea.form__input {
+    resize: vertical;
+    min-height: 120px;
+}
+
+.submit__btn {
+    background: linear-gradient(135deg, #df2020 0%, #ff4757 100%);
+    color: #fff;
+    border: none;
+    padding: 0.75rem 2rem;
+    border-radius: 25px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(223, 32, 32, 0.3);
+}
+
+.submit__btn:hover {
+    background: linear-gradient(135deg, #c41e3a 0%, #e74c3c 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(223, 32, 32, 0.4);
+}
+
+/* ===== Services Section ===== */
+.services__section {
+    background: #fff;
+    padding: 2rem;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.services__section h4 {
+    color: #2c3e50;
+    font-weight: 600;
+    border-bottom: 3px solid #df2020;
+    padding-bottom: 0.5rem;
+    display: inline-block;
+}
+
+.service__item {
+    padding: 1.5rem 1rem;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    background: #f8f9fa;
+}
+
+.service__item:hover {
+    background: #fff;
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.service__item i {
+    font-size: 2.5rem;
+    color: #df2020;
+    margin-bottom: 1rem;
+}
+
+.service__item h6 {
+    color: #2c3e50;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.service__item p {
+    color: #666;
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+/* ===== Responsive Design ===== */
+@media only screen and (max-width: 768px) {
+    .contact__title {
+        font-size: 2rem;
+    }
+
+    .contact__subtitle {
+        font-size: 1rem;
+    }
+
+    .contact__info,
+    .contact__form {
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .info__item {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .info__content h6 {
+        margin-top: 1rem;
+    }
+
+    .service__item {
+        margin-bottom: 1rem;
+    }
+}
+
+@media only screen and (max-width: 576px) {
+    .contact__section {
+        padding: 60px 0;
+    }
+
+    .contact__title {
+        font-size: 1.8rem;
+    }
+
+    .contact__info,
+    .contact__form {
+        padding: 1rem;
+    }
+
+    .submit__btn {
+        width: 100%;
+    }
+}

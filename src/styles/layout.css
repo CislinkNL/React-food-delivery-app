@@ -1,0 +1,24 @@
+/* ===== Layout Styles ===== */
+.layout-wrapper {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.main-content {
+    flex: 1;
+    min-height: calc(100vh - 100px);
+    padding-top: 0;
+}
+
+/* 确保content有足够的空间 */
+.main-content>* {
+    min-height: 50vh;
+}
+
+/* 移动端调整 */
+@media only screen and (max-width: 768px) {
+    .main-content {
+        min-height: calc(100vh - 80px);
+    }
+}

@@ -20,8 +20,8 @@ const Menu = () => {
     const [categoriesLoading, setCategoriesLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    // 分页配置
-    const dishesPerPage = 9;
+    // 分页配置 - 每页最多25个
+    const dishesPerPage = 25;
     const pagesVisited = pageNumber * dishesPerPage;
     const displayDishes = menuData.slice(pagesVisited, pagesVisited + dishesPerPage);
     const pageCount = Math.ceil(menuData.length / dishesPerPage);
@@ -181,7 +181,7 @@ const Menu = () => {
                         </Col>
                     </Row>
 
-                    {/* Categorie filter */}
+                    {/* Categorie filter - 移动端友好的横向滚动 */}
                     <Row className="mt-4">
                         <Col lg="12">
                             {categoriesLoading ? (
@@ -192,18 +192,29 @@ const Menu = () => {
                                     <span>Categorieën laden...</span>
                                 </div>
                             ) : (
-                                <div className="menu__category d-flex align-items-center justify-content-center gap-4">
-                                    {categories.map((category) => (
-                                        <button
-                                            key={category.id}
-                                            className={`menu__category-btn ${activeCategory === category.id ? "active" : ""
-                                                }`}
-                                            onClick={() => handleCategoryClick(category.id)}
-                                        >
-                                            <i className={category.icon}></i>
-                                            {category.name}
-                                        </button>
-                                    ))}
+                                <div className="menu__category-container">
+                                    <div className="menu__category-sticky">
+                                        <div className="menu__category-scroll">
+                                            <button
+                                                key="all"
+                                                className={`menu__category-btn ${activeCategory === "all" ? "active" : ""}`}
+                                                onClick={() => handleCategoryClick("all")}
+                                            >
+                                                <i className="ri-restaurant-line"></i>
+                                                Alle gerechten
+                                            </button>
+                                            {categories.map((category) => (
+                                                <button
+                                                    key={category.id}
+                                                    className={`menu__category-btn ${activeCategory === category.id ? "active" : ""}`}
+                                                    onClick={() => handleCategoryClick(category.id)}
+                                                >
+                                                    <i className={category.icon || "ri-restaurant-line"}></i>
+                                                    {category.nameNL || category.name}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
                                 </div>
                             )}
                         </Col>
@@ -273,27 +284,72 @@ const Menu = () => {
                                 )}
                             </Row>
 
-                            {/* Paginering */}
+                            {/* 移动端友好的分页控制 */}
                             {pageCount > 1 && (
                                 <Row>
                                     <Col lg="12">
-                                        <div className="pagination__wrapper d-flex align-items-center justify-content-center mt-4">
-                                            <ReactPaginate
-                                                pageCount={pageCount}
-                                                onPageChange={changePage}
-                                                forcePage={pageNumber}
-                                                previousLabel="Vorige"
-                                                nextLabel="Volgende"
-                                                containerClassName="pagination-container"
-                                                pageClassName="pagination-item"
-                                                pageLinkClassName="pagination-link"
-                                                previousClassName="pagination-item"
-                                                previousLinkClassName="pagination-link"
-                                                nextClassName="pagination-item"
-                                                nextLinkClassName="pagination-link"
-                                                activeClassName="active"
-                                                disabledClassName="disabled"
-                                            />
+                                        <div className="pagination__wrapper-mobile">
+                                            {/* 移动端简化分页控制 */}
+                                            <div className="pagination__mobile d-block d-md-none">
+                                                <div className="pagination__info">
+                                                    <span className="pagination__current">
+                                                        Pagina {pageNumber + 1} van {pageCount}
+                                                    </span>
+                                                    <span className="pagination__total">
+                                                        ({displayDishes.length} van {menuData.length} gerechten)
+                                                    </span>
+                                                </div>
+                                                <div className="pagination__controls">
+                                                    <button
+                                                        className="pagination__btn pagination__btn--prev"
+                                                        onClick={() => changePage({ selected: pageNumber - 1 })}
+                                                        disabled={pageNumber === 0}
+                                                    >
+                                                        <i className="ri-arrow-left-line"></i>
+                                                        Vorige
+                                                    </button>
+                                                    <button
+                                                        className="pagination__btn pagination__btn--next"
+                                                        onClick={() => changePage({ selected: pageNumber + 1 })}
+                                                        disabled={pageNumber >= pageCount - 1}
+                                                    >
+                                                        Volgende
+                                                        <i className="ri-arrow-right-line"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+
+                                            {/* 桌面端完整分页控制 */}
+                                            <div className="pagination__desktop d-none d-md-flex">
+                                                <ReactPaginate
+                                                    pageCount={pageCount}
+                                                    onPageChange={changePage}
+                                                    forcePage={pageNumber}
+                                                    previousLabel={
+                                                        <span>
+                                                            <i className="ri-arrow-left-line me-1"></i>
+                                                            Vorige
+                                                        </span>
+                                                    }
+                                                    nextLabel={
+                                                        <span>
+                                                            Volgende
+                                                            <i className="ri-arrow-right-line ms-1"></i>
+                                                        </span>
+                                                    }
+                                                    containerClassName="pagination-container"
+                                                    pageClassName="pagination-item"
+                                                    pageLinkClassName="pagination-link"
+                                                    previousClassName="pagination-item"
+                                                    previousLinkClassName="pagination-link"
+                                                    nextClassName="pagination-item"
+                                                    nextLinkClassName="pagination-link"
+                                                    activeClassName="active"
+                                                    disabledClassName="disabled"
+                                                    marginPagesDisplayed={1}
+                                                    pageRangeDisplayed={3}
+                                                />
+                                            </div>
                                         </div>
                                     </Col>
                                 </Row>

@@ -27,60 +27,77 @@ const initialState = {
   totalAmount: totalAmount,
 };
 
+// Helper function to generate option signature for comparison
+const getOptionSignature = (selectedOptions) => {
+  if (!selectedOptions || Object.keys(selectedOptions).length === 0) {
+    return "no-options";
+  }
+  return JSON.stringify(selectedOptions);
+};
+
+// Helper function to generate display text for selected options
+const generateOptionsText = (selectedOptions) => {
+  if (!selectedOptions || Object.keys(selectedOptions).length === 0) {
+    return "";
+  }
+
+  const optionTexts = [];
+  Object.entries(selectedOptions).forEach(([key, value]) => {
+    if (value && value.name) {
+      optionTexts.push(value.name);
+    }
+  });
+
+  return optionTexts.length > 0 ? `(${optionTexts.join(", ")})` : "";
+};
+
 const cartSlice = createSlice({
   name: "cart",
   initialState,
 
-  
   reducers: {
     // =========== add item ============
     addItem(state, action) {
       const newItem = action.payload;
-      const id = action.payload.id;
-      const extraIngredients = action.payload.extraIngredients;
-      const existingItem = state.cartItems.find((item) => item.id === id);
+      const baseId = newItem.id.split('_')[0]; // Get base ID without timestamp
+      const optionSignature = getOptionSignature(newItem.selectedOptions);
 
-      
+      // Find existing item with same base ID and same options
+      const existingItem = state.cartItems.find((item) => {
+        const itemBaseId = item.id.split('_')[0];
+        const itemOptionSignature = getOptionSignature(item.selectedOptions);
+        return itemBaseId === baseId && itemOptionSignature === optionSignature;
+      });
+
       if (!existingItem) {
+        // Add new item with options
+        const optionsText = generateOptionsText(newItem.selectedOptions);
         state.cartItems.push({
           id: newItem.id,
           title: newItem.title,
+          displayTitle: `${newItem.title} ${optionsText}`.trim(),
           image01: newItem.image01,
           price: newItem.price,
+          basePrice: newItem.basePrice || newItem.price,
           quantity: 1,
           totalPrice: newItem.price,
-          extraIngredients: newItem.extraIngredients
+          selectedOptions: newItem.selectedOptions || {},
+          category: newItem.category,
+          desc: newItem.desc
         });
         state.totalQuantity++;
-
-      } else if(existingItem && (JSON.stringify(existingItem.extraIngredients) === JSON.stringify(extraIngredients)))  {
+      } else {
+        // Increase quantity of existing item with same options
         state.totalQuantity++;
         existingItem.quantity++;
-      } else {
+        existingItem.totalPrice = existingItem.price * existingItem.quantity;
+      }
 
-        const value = JSON.parse(localStorage.getItem("cartItems"));
-        let index = value.findIndex(s => s.id === existingItem.id);
-        const newValue = {
-        id: existingItem.id,
-        title: existingItem.title,
-        image01: existingItem.image01,
-        price: existingItem.price,
-        quantity: 1,
-        totalPrice: existingItem.price,
-        extraIngredients: extraIngredients
-      }
-        state.cartItems.splice(index, 1, newValue); 
-        state.totalQuantity = state.cartItems.reduce(
-          (total, item) => total + Number(item.quantity),
-          0
-        );
-      }
-     
+      // Recalculate total amount
       state.totalAmount = state.cartItems.reduce(
         (total, item) => total + Number(item.price) * Number(item.quantity),
         0
       );
-
 
       setItemFunc(
         state.cartItems.map((item) => item),
@@ -89,37 +106,35 @@ const cartSlice = createSlice({
       );
     },
 
-   
-
     // ========= remove item ========
-
     removeItem(state, action) {
       const id = action.payload;
       const existingItem = state.cartItems.find((item) => item.id === id);
-      state.totalQuantity--;
 
-      if (existingItem.quantity === 1) {
-        state.cartItems = state.cartItems.filter((item) => item.id !== id);
-      } else {
-        existingItem.quantity--;
-        existingItem.totalPrice =
-          Number(existingItem.totalPrice) - Number(existingItem.price);
+      if (existingItem) {
+        state.totalQuantity--;
+
+        if (existingItem.quantity === 1) {
+          state.cartItems = state.cartItems.filter((item) => item.id !== id);
+        } else {
+          existingItem.quantity--;
+          existingItem.totalPrice = existingItem.price * existingItem.quantity;
+        }
+
+        state.totalAmount = state.cartItems.reduce(
+          (total, item) => total + Number(item.price) * Number(item.quantity),
+          0
+        );
+
+        setItemFunc(
+          state.cartItems.map((item) => item),
+          state.totalAmount,
+          state.totalQuantity
+        );
       }
-
-      state.totalAmount = state.cartItems.reduce(
-        (total, item) => total + Number(item.price) * Number(item.quantity),
-        0
-      );
-
-      setItemFunc(
-        state.cartItems.map((item) => item),
-        state.totalAmount,
-        state.totalQuantity
-      );
     },
 
     //============ delete item ===========
-
     deleteItem(state, action) {
       const id = action.payload;
       const existingItem = state.cartItems.find((item) => item.id === id);
@@ -127,18 +142,28 @@ const cartSlice = createSlice({
       if (existingItem) {
         state.cartItems = state.cartItems.filter((item) => item.id !== id);
         state.totalQuantity = state.totalQuantity - existingItem.quantity;
-      }
 
-      state.totalAmount = state.cartItems.reduce(
-        (total, item) => total + Number(item.price) * Number(item.quantity),
-        0
-      );
-      setItemFunc(
-        state.cartItems.map((item) => item),
-        state.totalAmount,
-        state.totalQuantity
-      );
+        state.totalAmount = state.cartItems.reduce(
+          (total, item) => total + Number(item.price) * Number(item.quantity),
+          0
+        );
+
+        setItemFunc(
+          state.cartItems.map((item) => item),
+          state.totalAmount,
+          state.totalQuantity
+        );
+      }
     },
+
+    //============ clear cart ===========
+    clearCart(state) {
+      state.cartItems = [];
+      state.totalQuantity = 0;
+      state.totalAmount = 0;
+
+      setItemFunc([], 0, 0);
+    }
   },
 });
 

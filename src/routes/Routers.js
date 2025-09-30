@@ -11,6 +11,9 @@ import FirebaseTest from "../pages/FirebaseTest";
 import CategoryTest from "../pages/CategoryTest";
 import CategoryDebugPage from "../pages/CategoryDebugPage";
 import SimpleTest from "../pages/SimpleTest";
+import MenuFieldTest from "../pages/MenuFieldTest";
+import CategoryDisplayTest from "../pages/CategoryDisplayTest";
+import CategoryMappingDebug from "../pages/CategoryMappingDebug";
 
 const Routers = () => {
   return (
@@ -26,6 +29,9 @@ const Routers = () => {
       <Route path="/category-test" element={<CategoryTest />} />
       <Route path="/category-debug" element={<CategoryDebugPage />} />
       <Route path="/simple-test" element={<SimpleTest />} />
+      <Route path="/menu-field-test" element={<MenuFieldTest />} />
+      <Route path="/category-display-test" element={<CategoryDisplayTest />} />
+      <Route path="/category-mapping-debug" element={<CategoryMappingDebug />} />
     </Routes>
   );
 };

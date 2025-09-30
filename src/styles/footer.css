@@ -1,74 +1,214 @@
+/* ===== Modern Footer Styles ===== */
 .footer {
-  padding: 50px 0px;
-  background: #fde4e4;
-  display: flex;
-  text-align: start;
-  justify-content: center;
-  gap: 8rem;
-  align-items: center;
+  background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+  color: #fff;
+  padding: 3rem 0 1.5rem 0;
+  margin-top: 4rem;
 }
 
-.footer__logo img {
-  width: calc(100% - 70%);
-  margin-bottom: 1.5rem;
-}
-
-.footer__logo h5 {
-  font-weight: 600;
-  font-size: 1rem;
-  margin-bottom: 15px;
-}
-
-.footer__logo p {
-  font-size: 0.9rem;
-  color: #333;
-  line-height: 29px;
-}
-
-.delivery__time-item {
-  display: flex;
-  margin: 0;
-  gap: 0.7rem;
-  background: transparent !important;
-}
-
-.delivery__time-item span {
-  font-weight: 600;
-  color: #212245;
-  margin: 0;
-}
-
-.delivery__time-item p {
-  color: #212245;
+.footer__content {
+  margin-bottom: 1rem;
 }
 
 .footer__title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 0.5rem;
+}
+
+.footer__subtitle {
+  font-size: 1rem;
+  color: #bdc3c7;
+  margin-bottom: 0;
+  line-height: 1.6;
+}
+
+.footer__section-title {
   font-size: 1.1rem;
-  color: #212245;
   font-weight: 600;
+  color: #fff;
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* ===== Delivery Time Section ===== */
+.delivery__time {
+  margin-bottom: 0;
+}
+
+.delivery__hours {
+  font-size: 0.95rem;
+  color: #ecf0f1;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.delivery__note {
+  font-size: 0.85rem;
+  color: #95a5a6;
+  margin-bottom: 0;
+  font-style: italic;
+}
+
+/* ===== Contact Section ===== */
+.footer__contact {
+  margin-bottom: 1rem;
+}
+
+.contact__item {
+  font-size: 0.9rem;
+  color: #ecf0f1;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.contact__item:last-child {
+  margin-bottom: 0;
+}
+
+/* ===== Footer Bottom Section ===== */
+.footer__divider {
+  border-color: #34495e;
+  margin: 2rem 0 1.5rem 0;
+  opacity: 0.6;
+}
+
+.footer__bottom {
+  text-align: center;
+}
+
+.copyright {
+  font-size: 0.9rem;
+  color: #95a5a6;
+  margin-bottom: 1rem;
+}
+
+.footer__links {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.footer__link {
+  font-size: 0.85rem;
+  color: #bdc3c7;
+  cursor: pointer;
+  transition: color 0.3s ease;
+  text-decoration: none;
+}
+
+.footer__link:hover {
+  color: #df2020;
+}
+
+.footer__separator {
+  color: #7f8c8d;
+  font-size: 0.8rem;
+}
+
+/* ===== Responsive Design ===== */
+@media only screen and (max-width: 992px) {
+  .footer {
+    padding: 2.5rem 0 1.5rem 0;
+  }
+
+  .footer__title {
+    font-size: 1.3rem;
+  }
+
+  .footer__section-title {
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+  }
 }
 
 @media only screen and (max-width: 768px) {
   .footer {
-    flex-direction: column;
+    padding: 2rem 0 1.5rem 0;
     text-align: center;
-    gap: 1rem;
   }
 
-  .footer__logo img {
-    width: calc(100% - 85%);
+  .footer__content,
+  .footer__info,
+  .footer__contact {
+    margin-bottom: 2rem;
   }
 
   .footer__title {
+    font-size: 1.2rem;
+    margin-bottom: 0.8rem;
+  }
+
+  .footer__subtitle {
     font-size: 0.9rem;
   }
 
-  .delivery__time-item span {
+  .footer__section-title {
+    font-size: 0.95rem;
+    margin-bottom: 1rem;
+  }
+
+  .contact__item {
+    justify-content: center;
+    font-size: 0.85rem;
+  }
+
+  .footer__links {
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+
+  .footer__separator {
+    display: none;
+  }
+
+  .copyright {
+    font-size: 0.85rem;
+  }
+}
+
+@media only screen and (max-width: 576px) {
+  .footer {
+    padding: 1.5rem 0 1rem 0;
+  }
+
+  .footer__title {
+    font-size: 1.1rem;
+  }
+
+  .footer__subtitle {
+    font-size: 0.85rem;
+  }
+
+  .footer__section-title {
+    font-size: 0.9rem;
+  }
+
+  .delivery__hours,
+  .contact__item {
     font-size: 0.8rem;
   }
 
-  .delivery__time-item p {
-    font-size: 0.7rem;
-    margin-bottom: 0;
+  .delivery__note {
+    font-size: 0.75rem;
+  }
+
+  .footer__links {
+    gap: 1rem;
+  }
+
+  .footer__link {
+    font-size: 0.8rem;
+  }
+
+  .copyright {
+    font-size: 0.8rem;
   }
 }

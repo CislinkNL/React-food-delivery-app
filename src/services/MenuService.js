@@ -41,19 +41,40 @@ class MenuService {
         }
     }
 
-    // 根据分类获取菜品
+    // 根据分类获取菜品 (支持categoryTakeAway字段)
     async getDishesByCategory(category) {
         try {
-            const dishes = await databaseService.query(this.dishesPath, {
-                orderBy: { type: 'child', key: 'category' },
-                equalTo: category
+            // 如果是"all"分类，返回所有菜品（排除只限餐厅）
+            if (category === 'all') {
+                const allDishes = await this.getAllDishes();
+                return allDishes.filter(dish => dish.onlyRestaurant !== true);
+            }
+
+            // 首先尝试从所有菜品中过滤
+            const allDishes = await this.getAllDishes();
+            const filteredDishes = allDishes.filter(dish => {
+                // 优先使用categoryTakeAway字段，如果没有则回退到legacy字段
+                const dishCategory = dish.categoryTakeAway || dish.category;
+                const categoryMatches = dishCategory === category;
+
+                // 排除只限餐厅的菜品
+                const isAvailableForTakeaway = dish.onlyRestaurant !== true;
+
+                return categoryMatches && isAvailableForTakeaway;
             });
-            return dishes ? dishes.map(dish => this.transformDishData(dish)) : [];
+
+            // 按sortingNrm排序
+            return filteredDishes.sort((a, b) => (a.sortingNrm || 0) - (b.sortingNrm || 0));
         } catch (error) {
             console.error('根据分类获取菜品失败:', error);
             // 返回本地数据的筛选结果
             const fallbackData = this.getFallbackMenuData();
-            return fallbackData.filter(dish => dish.category === category);
+            return fallbackData.filter(dish => {
+                const dishCategory = dish.categoryTakeAway || dish.category;
+                const categoryMatches = dishCategory === category;
+                const isAvailableForTakeaway = dish.onlyRestaurant !== true;
+                return categoryMatches && isAvailableForTakeaway;
+            });
         }
     }
 
@@ -307,25 +328,68 @@ class MenuService {
 
     // ==================== 数据转换 ====================
 
-    // 转换菜品数据格式
+    // 转换菜品数据格式 (支持新字段)
     transformDishData(dish) {
         return {
             id: dish.id,
-            title: dish.title || dish.name || '未知菜品',
+            title: dish.title || dish.name || dish.description || '未知菜品',
             price: parseFloat(dish.price) || 0,
             category: dish.category || 'main-dishes',
-            desc: dish.desc || dish.description || '',
+            desc: dish.desc || dish.description || dish.allergy || '',
             image01: dish.image01 || dish.image || '/images/default-dish.png',
-            options: dish.options || {},
-            available: dish.available !== false, // 默认为可用
+            available: dish.available !== false && dish.status !== 'uitverkocht',
             featured: dish.featured === true,
             spicyLevel: dish.spicyLevel || 0,
             preparationTime: dish.preparationTime || 15,
             nutrition: dish.nutrition || {},
             allergens: dish.allergens || [],
+
+            // 新增字段支持
+            onlyRestaurant: dish.onlyRestaurant || false,
+            categoryTakeAway: dish.categoryTakeAway || dish.category || this.determineCategoryFromSorting(dish.sortingNrm),
+            options: dish.options || "",
+
+            // 保留原有字段
+            sku: dish.sku,
+            sortingNrm: dish.sortingNrm,
+            group: dish.group,
+            hasOptions: dish.hasOptions,
+            menuType: dish.menuType,
+            priceAllinDranks: dish.priceAllinDranks,
+            status: dish.status,
+            taxRate: dish.taxRate,
+            allergy: dish.allergy,
+
+            // 时间戳
             createdAt: dish.createdAt,
             updatedAt: dish.updatedAt
         };
+    }
+
+    // 根据sortingNrm确定分类 (如果categoryTakeAway为空)
+    determineCategoryFromSorting(sortingNrm) {
+        if (!sortingNrm) return 'Cat1';
+
+        // 基于我们之前定义的映射逻辑
+        if (sortingNrm >= 1 && sortingNrm <= 12) return 'Cat1';      // Nigiri
+        if (sortingNrm >= 13 && sortingNrm <= 30) return 'Cat2';     // Gunkan/Temaki
+        if (sortingNrm >= 31 && sortingNrm <= 54) return 'Cat3';     // Maki
+        if (sortingNrm >= 55 && sortingNrm <= 61) return 'Cat4';     // Pokebowls
+        if (sortingNrm >= 62 && sortingNrm <= 71) return 'Cat5';     // Salade
+        if (sortingNrm >= 72 && sortingNrm <= 76) return 'Cat8';     // Warme gerechten
+        if (sortingNrm >= 77 && sortingNrm <= 100) return 'Cat6';    // Soep
+        if (sortingNrm >= 101 && sortingNrm <= 136) return 'Cat9';   // Dinner only
+        if (sortingNrm >= 137 && sortingNrm <= 146) return 'Cat11';  // Desserts
+        if (sortingNrm >= 147 && sortingNrm <= 200) return 'Cat10';  // Specials
+        if (sortingNrm >= 201 && sortingNrm <= 219) return 'Cat16';  // Frisdranken
+        if (sortingNrm >= 220 && sortingNrm <= 230) return 'Cat17';  // Bieren
+        if (sortingNrm >= 231 && sortingNrm <= 244) return 'Cat22';  // Japanse dranken
+        if (sortingNrm >= 245 && sortingNrm <= 249) return 'Cat18';  // Wijnen/Aperitieven
+        if (sortingNrm >= 250 && sortingNrm <= 291) return 'Cat20';  // Sterke dranken
+        if (sortingNrm >= 292 && sortingNrm <= 313) return 'Cat21';  // Warme dranken
+        if (sortingNrm >= 314) return 'Cat19';                       // Cocktails
+
+        return 'Cat1'; // 默认分类
     }
 
     // ==================== 后备数据 ====================

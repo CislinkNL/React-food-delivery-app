@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 import { Container } from "reactstrap";
 import logo from "../../assets/images/res-logo.png";
-import { NavLink, Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 
 import { cartUiActions } from "../../store/shopping-cart/cartUiSlice";
@@ -12,19 +12,19 @@ import "../../styles/header.css";
 
 const nav__links = [
   {
-    display: "Home",
+    display: "首页",
     path: "/home",
   },
   {
-    display: "Foods",
-    path: "/pizzas",
+    display: "菜单",
+    path: "/menu",
   },
   {
-    display: "Cart",
+    display: "购物车",
     path: "/cart",
   },
   {
-    display: "Contact",
+    display: "联系我们",
     path: "/contact",
   },
 ];
@@ -45,18 +45,20 @@ const Header = () => {
   console.log(menuRef?.current?.classList.value);
 
   useEffect(() => {
-    window.addEventListener("scroll", () => {
+    const handleScroll = () => {
       if (
-        document.body.scrollTop > 80 ||
-        document.documentElement.scrollTop > 80
+        document.body.scrollTop > 10 ||
+        document.documentElement.scrollTop > 10
       ) {
-        headerRef.current.classList.add("header__shrink");
+        headerRef.current?.classList.add("header__shrink");
       } else {
-        headerRef.current.classList.remove("header__shrink");
+        headerRef.current?.classList.remove("header__shrink");
       }
-    });
+    };
 
-    return () => window.removeEventListener("scroll");
+    window.addEventListener("scroll", handleScroll);
+
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   return (
@@ -99,7 +101,7 @@ const Header = () => {
               <i className="ri-shopping-basket-line"></i>
               <span className="cart__badge">{totalQuantity}</span>
             </span>
-            
+
             <span className="mobile__menu" onClick={toggleMenu}>
               <i className="ri-menu-line"></i>
             </span>

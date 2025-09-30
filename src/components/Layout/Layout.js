@@ -4,6 +4,7 @@ import Header from "../Header/Header.jsx";
 import Footer from "../Footer/Footer.jsx";
 import Routes from "../../routes/Routers";
 import Carts from "../UI/cart/Carts.jsx";
+import "../../styles/layout.css";
 
 import { useSelector } from "react-redux";
 
@@ -11,19 +12,13 @@ const Layout = () => {
   const showCart = useSelector((state) => state.cartUi.cartIsVisible);
 
   return (
-    <div className="d-flex flex-column vh-100 justify-content-between">
+    <div className="layout-wrapper">
       <Header />
       {showCart && <Carts />}
-      <div>
+      <main className="main-content">
         <Routes />
-      </div>
+      </main>
       <Footer />
-      <Footer />
-      <Footer />
-      <Footer />
-      <Footer />
-      <Footer />
-
     </div>
   );
 };

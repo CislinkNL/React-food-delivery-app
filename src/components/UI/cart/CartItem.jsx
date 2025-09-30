@@ -8,9 +8,19 @@ import { useDispatch } from "react-redux";
 import { cartActions } from "../../../store/shopping-cart/cartSlice";
 
 const CartItem = ({ item, onClose }) => {
-  const { id, title, price, image01, quantity, extraIngredients } = item;
-  let navigate = useNavigate(); 
+  const {
+    id,
+    title,
+    displayTitle,
+    price,
+    basePrice,
+    image01,
+    quantity,
+    selectedOptions,
+    category
+  } = item;
 
+  let navigate = useNavigate();
   const dispatch = useDispatch();
 
   const incrementItem = (event) => {
@@ -18,9 +28,12 @@ const CartItem = ({ item, onClose }) => {
       cartActions.addItem({
         id,
         title,
+        displayTitle,
         price,
+        basePrice,
         image01,
-        extraIngredients
+        selectedOptions,
+        category
       })
     );
     event.stopPropagation();
@@ -36,49 +49,93 @@ const CartItem = ({ item, onClose }) => {
     event.stopPropagation();
   };
 
-  const handlePizzaSelection = () =>  {
-    navigate(`/pizzas/${id}`);
-    onClose(); 
-  }
+  const handleItemSelection = () => {
+    const baseId = id.split('_')[0]; // Get base ID without timestamp
+    navigate(`/menu/${baseId}`);
+    onClose();
+  };
+
+  // Get category display name
+  const getCategoryName = (cat) => {
+    const categoryMap = {
+      "main-dishes": "主食",
+      "appetizers": "开胃菜",
+      "soups": "汤类",
+      "beverages": "饮料",
+      "desserts": "甜品"
+    };
+    return categoryMap[cat] || cat;
+  };
+
+  // Generate options display text
+  const getOptionsDisplay = () => {
+    if (!selectedOptions || Object.keys(selectedOptions).length === 0) {
+      return null;
+    }
+
+    const optionTexts = [];
+    Object.entries(selectedOptions).forEach(([key, value]) => {
+      if (value && value.name) {
+        optionTexts.push(value.name);
+      }
+    });
+
+    return optionTexts.length > 0 ? optionTexts : null;
+  };
+
+  const optionsDisplay = getOptionsDisplay();
 
   return (
-    <ListGroupItem className="border-0 cart__item" onClick={handlePizzaSelection}>
+    <ListGroupItem className="border-0 cart__item" onClick={handleItemSelection}>
       <div className="cart__item-info d-flex gap-4">
-        <img src={image01} alt="product-img" />
+        <img src={image01} alt="product-img" className="cart__item-img" />
 
         <div className="cart__product-info w-100 d-flex align-items-center gap-4 justify-content-between">
-          <div>
+          <div className="cart__product-details">
             <h6 className="cart__product-title">{title}</h6>
-            <p className=" d-flex align-items-center gap-5 cart__product-price">
-              {quantity}x <span>${price}</span>
-            </p>
-            <div className="d-flex flex-column">
-            {
-              extraIngredients !== undefined && (
-                Array.from(extraIngredients).map(value => {
-                  return(
-                    <span key={value} className="m-0">
-                      {value}
-                    </span>
-                  )
-                })
-                )
-              }
+
+            {/* Category Badge */}
+            <span className="cart__category-badge">{getCategoryName(category)}</span>
+
+            {/* Selected Options */}
+            {optionsDisplay && (
+              <div className="cart__options">
+                {optionsDisplay.map((option, index) => (
+                  <span key={index} className="cart__option-tag">
+                    {option}
+                  </span>
+                ))}
               </div>
-            <div className=" d-flex align-items-center justify-content-between increase__decrease-btn">
-              <span className="increase__btn" onClick={event => incrementItem(event)}>
-                <i className="ri-add-line"></i>
-              </span>
-              <span className="quantity">{quantity}</span>
-              <span className="decrease__btn" onClick={event => decreaseItem(event)}>
+            )}
+
+            {/* Price Information */}
+            <p className="cart__product-price d-flex align-items-center gap-2">
+              {quantity}x <span className="price">￥{price}</span>
+              {basePrice && price !== basePrice && (
+                <span className="base-price">（基础价：￥{basePrice}）</span>
+              )}
+            </p>
+
+            {/* Quantity Controls */}
+            <div className="quantity__controls d-flex align-items-center gap-2">
+              <span className="quantity__btn decrease__btn" onClick={event => decreaseItem(event)}>
                 <i className="ri-subtract-line"></i>
+              </span>
+              <span className="quantity__display">{quantity}</span>
+              <span className="quantity__btn increase__btn" onClick={event => incrementItem(event)}>
+                <i className="ri-add-line"></i>
               </span>
             </div>
           </div>
 
-          <span className="delete__btn" onClick={event => deleteItem(event)}>
-            <i className="ri-close-line"></i>
-          </span>
+          <div className="cart__item-actions">
+            <div className="cart__total-price">
+              ￥{(price * quantity).toFixed(2)}
+            </div>
+            <span className="delete__btn" onClick={event => deleteItem(event)}>
+              <i className="ri-close-line"></i>
+            </span>
+          </div>
         </div>
       </div>
     </ListGroupItem>
