@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { cartActions } from "../../../store/shopping-cart/cartSlice";
 import { Link } from "react-router-dom";
 import DishOptionsModal from "../../DishOptionsModal/DishOptionsModal";
@@ -9,6 +9,9 @@ import "../../../styles/product-card.css";
 const ProductCard = (props) => {
   const { id, title, image01, price, options, desc, category, categoryTakeAway, keuzeMenus } = props.item;
   const dispatch = useDispatch();
+  
+  // 获取购物车状态
+  const cartItems = useSelector(state => state.cart.cartItems);
 
   // 使用 categoryTakeAway 作为主要分类，如果没有则使用 category 作为后备
   const actualCategory = categoryTakeAway || category;
@@ -22,6 +25,15 @@ const ProductCard = (props) => {
   const hasKeuzeMenus = keuzeMenus && Array.isArray(keuzeMenus) && keuzeMenus.length > 0;
   const hasLegacyOptions = options && Object.keys(options).length > 0;
   const hasOptions = hasKeuzeMenus || hasLegacyOptions;
+
+  // 计算当前商品在购物车中的总数量（包括所有变体）
+  const getItemQuantityInCart = () => {
+    return cartItems
+      .filter(cartItem => cartItem.id === String(id))
+      .reduce((total, item) => total + item.quantity, 0);
+  };
+
+  const itemQuantityInCart = getItemQuantityInCart();
 
   // Quick add to cart (no options)
   const quickAddToCart = () => {
@@ -59,6 +71,33 @@ const ProductCard = (props) => {
     setSuccessMessage(`"${dishTitle}" toegevoegd aan winkelwagen`);
     setSuccessDetails(details.length > 0 ? details : null);
     setShowSuccessNotification(true);
+  };
+
+  // 增加数量（仅适用于无选项商品）
+  const increaseQuantity = () => {
+    if (!hasOptions) {
+      quickAddToCart();
+    }
+  };
+
+  // 减少数量
+  const decreaseQuantity = () => {
+    // 找到购物车中该商品的最后一个实例
+    const lastItem = cartItems
+      .filter(cartItem => cartItem.id === String(id))
+      .pop();
+    
+    if (lastItem) {
+      dispatch(cartActions.removeItem({
+        id: lastItem.id,
+        optionSignature: lastItem.optionSignature || "no-options"
+      }));
+      
+      // 显示移除通知
+      setSuccessMessage(`"${title}" 数量已减少`);
+      setSuccessDetails(null);
+      setShowSuccessNotification(true);
+    }
   };
 
   // Auto-hide success notification
@@ -105,9 +144,31 @@ const ProductCard = (props) => {
         </div>
         <div className="d-flex flex-column align-items-center justify-content-between">
           <span className="product__price mb-2">€{price.toFixed(2)}</span>
-          <button className="addTOCART__btn" onClick={handleAddClick}>
-            {hasOptions ? "Opties Kiezen" : "Toevoegen"}
-          </button>
+          
+          {/* 根据商品状态显示不同的控件 */}
+          {itemQuantityInCart > 0 && !hasOptions ? (
+            // 显示数量控制器（仅适用于无选项商品）
+            <div className="product__quantity-controls d-flex align-items-center gap-2">
+              <button 
+                className="quantity__btn decrease__btn" 
+                onClick={decreaseQuantity}
+              >
+                <i className="ri-subtract-line"></i>
+              </button>
+              <span className="quantity__display">{itemQuantityInCart}</span>
+              <button 
+                className="quantity__btn increase__btn" 
+                onClick={increaseQuantity}
+              >
+                <i className="ri-add-line"></i>
+              </button>
+            </div>
+          ) : (
+            // 显示添加按钮
+            <button className="addTOCART__btn" onClick={handleAddClick}>
+              {hasOptions ? "Opties Kiezen" : "Toevoegen"}
+            </button>
+          )}
         </div>
       </div>
 
