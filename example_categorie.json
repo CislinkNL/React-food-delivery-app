@@ -1,0 +1,91 @@
+{
+  "drinks": [
+    {
+      "id": "Cat16",
+      "name": "Frisdranken",
+      "target": 201
+    },
+    {
+      "id": "Cat17",
+      "name": "Bieren",
+      "target": 220
+    },
+    {
+      "id": "Cat22",
+      "name": "Japanse dranken",
+      "target": 231
+    },
+    {
+      "id": "Cat18",
+      "name": "Wijnen/Aperitieven",
+      "target": 245
+    },
+    {
+      "id": "Cat20",
+      "name": "Sterke dranken",
+      "target": 250
+    },
+    {
+      "id": "Cat21",
+      "name": "Warme dranken",
+      "target": 292
+    },
+    {
+      "id": "Cat19",
+      "name": "Cocktails",
+      "target": 314
+    }
+  ],
+  "food": [
+    {
+      "id": "Cat1",
+      "name": "Nigiri",
+      "target": 1
+    },
+    {
+      "id": "Cat2",
+      "name": "Gunkan/Temaki",
+      "target": 13
+    },
+    {
+      "id": "Cat3",
+      "name": "Maki",
+      "target": 31
+    },
+    {
+      "id": "Cat4",
+      "name": "Pokebowls",
+      "target": 55
+    },
+    {
+      "id": "Cat5",
+      "name": "Salade",
+      "target": 62
+    },
+    {
+      "id": "Cat8",
+      "name": "Warme gerechten",
+      "target": 72
+    },
+    {
+      "id": "Cat6",
+      "name": "Soep",
+      "target": 77
+    },
+    {
+      "id": "Cat9",
+      "name": "Dinner only",
+      "target": 101
+    },
+    {
+      "id": "Cat10",
+      "name": "Specials",
+      "target": 147
+    },
+    {
+      "id": "Cat11",
+      "name": "Desserts",
+      "target": 137
+    }
+  ]
+}
