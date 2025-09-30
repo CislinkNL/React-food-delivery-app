@@ -59,12 +59,14 @@ const cartSlice = createSlice({
     // =========== add item ============
     addItem(state, action) {
       const newItem = action.payload;
-      const baseId = newItem.id.split('_')[0]; // Get base ID without timestamp
+      // Ensure ID is a string for split operation
+      const itemId = String(newItem.id);
+      const baseId = itemId.split('_')[0]; // Get base ID without timestamp
       const optionSignature = getOptionSignature(newItem.selectedOptions);
 
       // Find existing item with same base ID and same options
       const existingItem = state.cartItems.find((item) => {
-        const itemBaseId = item.id.split('_')[0];
+        const itemBaseId = String(item.id).split('_')[0];
         const itemOptionSignature = getOptionSignature(item.selectedOptions);
         return itemBaseId === baseId && itemOptionSignature === optionSignature;
       });

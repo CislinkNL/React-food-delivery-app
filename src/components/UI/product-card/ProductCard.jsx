@@ -39,7 +39,7 @@ const ProductCard = (props) => {
   // Add to cart with options
   const addToCart = () => {
     const cartItem = {
-      id: hasOptions ? `${id}_${Date.now()}` : id, // Unique ID for items with options
+      id: hasOptions ? `${String(id)}_${Date.now()}` : String(id), // Ensure ID is string
       title,
       image01,
       price: totalPrice,
