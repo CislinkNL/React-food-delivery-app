@@ -105,27 +105,115 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.425);
+    background: rgba(0, 0, 0, 0.6);
+    /* 增加背景透明度 */
     z-index: 99;
     display: none;
+    backdrop-filter: blur(3px);
+    /* 添加模糊效果 */
+    animation: fadeIn 0.3s ease;
+    /* 添加淡入动画 */
   }
 
   .menu {
     position: absolute;
     top: 0;
     right: 0;
-    width: 250px;
+    width: 280px;
+    /* 稍微增加宽度 */
     height: 100%;
-    background: #fff;
+    background: linear-gradient(135deg, #fff 0%, #f8f9fa 100%);
+    /* 添加渐变背景 */
     flex-direction: column;
     justify-content: center;
     align-items: center;
     z-index: 100;
-    line-height: 20px;
+    line-height: 30px;
+    /* 增加行高 */
+    box-shadow: -5px 0 25px rgba(0, 0, 0, 0.15);
+    /* 增强阴影效果 */
+    border-left: 1px solid rgba(0, 0, 0, 0.05);
+    /* 添加左边框 */
+    transition: all 0.3s ease;
+    /* 添加过渡效果 */
+  }
+
+  .menu:hover {
+    background: linear-gradient(135deg, #fff 0%, #f0f0f0 100%);
+    /* 悬停时的背景变化 */
+    box-shadow: -8px 0 30px rgba(0, 0, 0, 0.2);
+    /* 悬停时增强阴影 */
   }
 
   .menu a {
-    font-size: 0.9rem;
+    font-size: 1.1rem;
+    /* 增大字体 */
+    font-weight: 500;
+    /* 增加字体粗细 */
+    padding: 0.8rem 1.5rem;
+    /* 增加内边距 */
+    margin: 0.3rem 0;
+    /* 增加项目间距 */
+    border-radius: 8px;
+    /* 添加圆角 */
+    transition: all 0.3s ease;
+    /* 添加过渡效果 */
+    color: #2c3e50;
+    /* 设置默认颜色 */
+    width: 80%;
+    /* 设置宽度 */
+    text-align: center;
+    /* 居中对齐 */
+    position: relative;
+    /* 为伪元素定位 */
+    overflow: hidden;
+    /* 隐藏溢出内容 */
+    text-decoration: none;
+    /* 移除下划线 */
+    z-index: 2;
+    /* 确保文字在扫光效果上方 */
+  }
+
+  .menu a::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+    transition: left 0.6s ease;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .menu a:hover::before {
+    left: 100%;
+    /* 创建光滑的扫光效果 */
+  }
+
+  .menu a:hover {
+    background: linear-gradient(135deg, #df2020 0%, #ff4444 100%);
+    /* 渐变悬停背景 */
+    color: #fff;
+    /* 悬停文字颜色 */
+    transform: translateX(-3px) scale(1.02);
+    /* 组合变换效果 */
+    box-shadow: 0 4px 15px rgba(223, 32, 32, 0.3);
+    /* 添加阴影 */
+    animation: bounce 0.6s ease;
+    /* 添加弹跳动画 */
+  }
+
+  .menu a.active {
+    background: linear-gradient(135deg, #df2020 0%, #ff4444 100%);
+    /* 激活状态渐变背景 */
+    color: #fff;
+    /* 激活状态文字颜色 */
+    box-shadow: 0 2px 10px rgba(223, 32, 32, 0.2);
+    /* 激活状态阴影 */
+    animation: pulse 2s infinite;
+    /* 添加脉冲动画 */
   }
 
   .mobile__menu {
@@ -135,31 +223,147 @@
   .show__menu {
     display: block;
   }
+
+  /* 添加菜单滑入动画 */
+  .show__menu .menu {
+    animation: slideInRight 0.4s ease, scaleIn 0.4s ease;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes slideInRight {
+    from {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes pulse {
+    0% {
+      box-shadow: 0 2px 10px rgba(223, 32, 32, 0.2);
+    }
+
+    50% {
+      box-shadow: 0 4px 20px rgba(223, 32, 32, 0.4);
+    }
+
+    100% {
+      box-shadow: 0 2px 10px rgba(223, 32, 32, 0.2);
+    }
+  }
+
+  @keyframes bounce {
+
+    0%,
+    20%,
+    50%,
+    80%,
+    100% {
+      transform: translateX(-3px) scale(1.02);
+    }
+
+    40% {
+      transform: translateX(-5px) scale(1.05);
+    }
+
+    60% {
+      transform: translateX(-2px) scale(1.03);
+    }
+  }
+
+  @keyframes scaleIn {
+    0% {
+      transform: scale(0.8);
+    }
+
+    100% {
+      transform: scale(1);
+    }
+  }
 }
 
 .header__closeButton {
-  width: fit-content;
-  height: 60px;
-  padding: 10px 20px;
+  width: 44px;
+  /* 固定宽度 */
+  height: 44px;
+  /* 固定高度，形成正方形 */
+  padding: 0;
+  /* 移除内边距 */
   position: absolute;
-  top: 0.5rem;
-  right: 0rem;
-  margin: 0.5rem 0;
+  top: 1rem;
+  right: 1rem;
+  margin: 0;
   display: none;
+  background: rgba(223, 32, 32, 0.1);
+  /* 添加背景色 */
+  border: none;
+  /* 移除边框 */
+  border-radius: 12px;
+  /* 添加圆角 */
+  transition: all 0.3s ease;
+  /* 添加过渡效果 */
+  color: #df2020;
+  /* 设置图标颜色 */
+  font-size: 1.2rem;
+  /* 增大图标大小 */
+  cursor: pointer;
+  /* 添加指针 */
+  align-items: center;
+  /* 垂直居中 */
+  justify-content: center;
+  /* 水平居中 */
+}
+
+.header__closeButton:hover {
+  background: rgba(223, 32, 32, 0.2);
+  /* 悬停效果 */
+  transform: scale(1.1);
+  /* 悬停时放大但不旋转，避免与内部图标冲突 */
+  box-shadow: 0 4px 12px rgba(223, 32, 32, 0.3);
+  /* 添加阴影 */
 }
 
 .header__closeButton span i {
-  font-size: 1.1rem;
-  background: #212245;
-  padding: 5px;
-  border-radius: 50%;
-  color: #fff;
+  font-size: 1.4rem;
+  background: transparent;
+  /* 移除背景 */
+  padding: 0;
+  /* 移除内边距 */
+  border-radius: 0;
+  /* 移除圆角 */
+  color: #df2020;
+  /* 使用主题红色 */
   cursor: pointer;
+  transition: transform 0.3s ease;
+  /* 添加变换过渡 */
+}
+
+.header__closeButton:hover span i {
+  transform: rotate(180deg);
+  /* 悬停时旋转图标 */
 }
 
 @media only screen and (max-width: 992px) {
   .close__button {
     display: flex;
+  }
+
+  .header__closeButton {
+    display: flex !important;
+    /* 在移动端显示关闭按钮 */
   }
 }
 
