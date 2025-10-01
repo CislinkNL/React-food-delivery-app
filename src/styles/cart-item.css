@@ -13,6 +13,8 @@
 
 .cart__item-info {
   width: 100%;
+  align-items: flex-start;
+  /* 确保顶部对齐 */
 }
 
 .cart__item-img {
@@ -26,10 +28,15 @@
 .cart__product-info {
   flex: 1;
   align-items: stretch !important;
+  gap: 1rem !important;
+  /* 确保左右两侧有足够间距 */
 }
 
 .cart__product-details {
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
 }
 
 .cart__product-title {
@@ -97,8 +104,8 @@
   display: inline-flex;
   border: 1px solid #e9ecef;
   width: fit-content;
-  /* 确保宽度自适应内容 */
   align-items: center;
+  justify-content: center;
   gap: 0.5rem;
 }
 
@@ -114,6 +121,9 @@
   cursor: pointer;
   transition: all 0.3s ease;
   font-size: 0.8rem;
+  line-height: 1;
+  border: none;
+  outline: none;
 }
 
 .quantity__btn:hover {
@@ -129,13 +139,68 @@
   font-size: 0.9rem;
 }
 
-/* Cart Item Actions */
+/* Cart Item Actions - 右侧操作区域 */
 .cart__item-actions {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
   justify-content: space-between;
   gap: 0.5rem;
+  min-height: 80px;
+  /* 确保有足够高度 */
+  padding-left: 1rem;
+  /* 与左侧内容保持距离 */
+}
+
+/* Cart Quantity Controls - 优化对齐 */
+.cart__quantity-controls {
+  background: #f8f9fa;
+  padding: 0.3rem 0.5rem;
+  border-radius: 20px;
+  display: inline-flex;
+  border: 1px solid #e9ecef;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin: 0.5rem 0;
+  width: fit-content;
+  height: 32px;
+  /* 固定高度确保对齐 */
+}
+
+.cart__quantity-controls .quantity__btn {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #df2020;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.75rem;
+  line-height: 1;
+  border: none;
+  outline: none;
+  flex-shrink: 0;
+  /* 防止按钮缩小 */
+}
+
+.cart__quantity-controls .quantity__btn:hover {
+  background: #c41e3a;
+  transform: scale(1.05);
+}
+
+.cart__quantity-controls .quantity__display {
+  font-weight: 600;
+  color: #2c3e50;
+  min-width: 24px;
+  text-align: center;
+  font-size: 0.9rem;
+  line-height: 1;
+  flex-shrink: 0;
+  /* 防止数字区域缩小 */
 }
 
 .cart__total-price {
@@ -143,6 +208,8 @@
   font-weight: 700;
   color: #df2020;
   text-align: right;
+  white-space: nowrap;
+  /* 防止价格换行 */
 }
 
 .delete__btn {
@@ -157,6 +224,10 @@
   cursor: pointer;
   transition: all 0.3s ease;
   font-size: 1rem;
+  border: none;
+  outline: none;
+  flex-shrink: 0;
+  /* 防止删除按钮缩小 */
 }
 
 .delete__btn:hover {

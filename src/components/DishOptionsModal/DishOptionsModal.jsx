@@ -112,6 +112,11 @@ const DishOptionsModal = ({
         try {
             // 生成选项显示文本
             const optionsText = KeuzeMenuService.generateOptionsDisplayText(keuzeMenus, selectedOptions);
+            console.log('=== DishOptionsModal调试 ===');
+            console.log('生成的optionsText:', optionsText);
+            console.log('selectedOptions:', selectedOptions);
+            console.log('keuzeMenus:', keuzeMenus);
+            console.log('========================');
 
             // 创建唯一ID（包含选项信息）
             const optionsId = Object.entries(selectedOptions)
@@ -161,7 +166,14 @@ const DishOptionsModal = ({
     if (!dish) return null;
 
     return (
-        <Modal isOpen={isOpen} toggle={toggle} size="lg" className="dish-options-modal">
+        <Modal
+            isOpen={isOpen}
+            toggle={toggle}
+            size="lg"
+            className="dish-options-modal"
+            fade={false}
+            unmountOnClose={true}
+        >
             <ModalHeader toggle={toggle} className="options-modal-header">
                 <div className="d-flex align-items-center">
                     <img

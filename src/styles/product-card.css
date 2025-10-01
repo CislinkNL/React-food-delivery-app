@@ -450,3 +450,185 @@
     min-width: 20px;
   }
 }
+
+/* ===== Options Management Styles ===== */
+.product__options-management {
+  width: 100%;
+  max-width: 120px;
+}
+
+.options-quantity-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.options-quantity-info .quantity__display {
+  font-weight: 700;
+  color: #df2020;
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
+.options-quantity-info .quantity__label {
+  font-size: 0.7rem;
+  color: #666;
+  margin-top: 0.1rem;
+}
+
+.options-actions-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+  /* 重置margin */
+}
+
+.product__options-management .options-actions-container .options-actions {
+  width: auto !important;
+  display: flex !important;
+  flex-direction: row !important;
+  /* 强制水平排列 */
+  justify-content: center !important;
+  align-items: center !important;
+  gap: 0.75rem !important;
+  /* 增加间距 */
+  padding: 0.25rem;
+  min-height: 36px;
+  /* 确保容器高度 */
+  flex-wrap: nowrap !important;
+  /* 防止换行 */
+  margin: 0 !important;
+  /* 重置所有margin */
+}
+
+.product__options-management .options-actions-container .options-actions .quantity__btn {
+  width: 32px !important;
+  height: 32px !important;
+  border-radius: 50% !important;
+  background: #dc3545 !important;
+  color: #fff !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 1rem;
+  border: none !important;
+  flex-shrink: 0 !important;
+  /* 防止按钮压缩 */
+  min-width: 32px !important;
+  max-width: 32px !important;
+  margin: 0 !important;
+  /* 重置按钮margin */
+}
+
+.product__options-management .options-actions-container .options-actions .quantity__btn:hover {
+  background: #c82333;
+  transform: scale(1.05);
+  box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
+}
+
+.product__options-management .options-actions-container .options-actions .addTOCART__btn.compact {
+  width: 32px !important;
+  height: 32px !important;
+  border-radius: 50% !important;
+  background: #df2020 !important;
+  color: #fff !important;
+  border: none !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 1rem;
+  padding: 0 !important;
+  flex-shrink: 0 !important;
+  /* 防止按钮压缩 */
+  min-width: 32px !important;
+  max-width: 32px !important;
+  margin: 0 !important;
+  /* 重置按钮margin */
+}
+
+.options-actions .addTOCART__btn.compact:hover {
+  background: #c71e1e;
+  transform: scale(1.05);
+  box-shadow: 0 2px 8px rgba(223, 32, 32, 0.3);
+}
+
+.options-actions .addTOCART__btn.compact i {
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.options-hint {
+  margin-top: 0.25rem;
+}
+
+.options-hint .hint-text {
+  font-size: 0.65rem;
+  color: #666;
+  text-align: center;
+  font-style: italic;
+}
+
+/* 响应式设计 */
+@media only screen and (max-width: 768px) {
+  .product__options-management {
+    max-width: 100px;
+  }
+
+  .options-quantity-info .quantity__display {
+    font-size: 1rem;
+  }
+
+  .options-quantity-info .quantity__label {
+    font-size: 0.65rem;
+  }
+
+  .options-actions-container {
+    width: 100%;
+    min-height: 36px;
+    /* 确保容器有足够高度 */
+  }
+
+  .options-actions {
+    gap: 0.5rem !important;
+    /* 移动端间距 */
+    padding: 0.2rem;
+    flex-direction: row !important;
+    /* 强制移动端也是水平排列 */
+    min-height: 32px;
+    /* 移动端最小高度 */
+    flex-wrap: nowrap !important;
+    /* 防止换行 */
+    margin: 0 !important;
+    /* 移动端也重置margin */
+  }
+
+  .options-actions .quantity__btn {
+    width: 28px !important;
+    height: 28px !important;
+    font-size: 0.9rem;
+    min-width: 28px !important;
+    max-width: 28px !important;
+    flex-shrink: 0 !important;
+    margin: 0 !important;
+    /* 移动端按钮margin重置 */
+  }
+
+  .options-actions .addTOCART__btn.compact {
+    width: 28px !important;
+    height: 28px !important;
+    font-size: 0.9rem;
+    min-width: 28px !important;
+    max-width: 28px !important;
+    margin: 0 !important;
+    /* 移动端按钮margin重置 */
+    flex-shrink: 0 !important;
+    /* 防止按钮压缩 */
+  }
+}

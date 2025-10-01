@@ -167,6 +167,35 @@ const ProductCard = (props) => {
                 <i className="ri-add-line"></i>
               </button>
             </div>
+          ) : itemQuantityInCart > 0 && hasOptions ? (
+            // 显示有选项商品的管理界面
+            <div className="product__options-management d-flex flex-column align-items-center gap-2">
+              <div className="options-quantity-info">
+                <span className="quantity__display">{itemQuantityInCart}</span>
+                <span className="quantity__label">in winkelwagen</span>
+              </div>
+              <div className="options-actions-container">
+                <div className="options-actions">
+                  <button
+                    className="quantity__btn decrease__btn"
+                    onClick={decreaseQuantity}
+                    title="Verwijder laatste item"
+                  >
+                    <i className="ri-subtract-line"></i>
+                  </button>
+                  <button
+                    className="addTOCART__btn compact"
+                    onClick={handleAddClick}
+                    title="Voeg meer toe met opties"
+                  >
+                    <i className="ri-add-line"></i>
+                  </button>
+                </div>
+              </div>
+              <div className="options-hint">
+                <span className="hint-text">Klik + voor nieuwe keuze</span>
+              </div>
+            </div>
           ) : (
             // 显示添加按钮
             <button className="addTOCART__btn" onClick={handleAddClick}>

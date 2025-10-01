@@ -44,6 +44,11 @@
   transition: all 0.3s ease;
 }
 
+.order__btn a {
+  color: #fff !important;
+  text-decoration: none;
+}
+
 .order__btn:hover {
   background: linear-gradient(135deg, #c41e3a 0%, #e74c3c 100%);
   transform: translateY(-2px);

@@ -178,24 +178,73 @@ class KeuzeMenuService {
     generateOptionsDisplayText(keuzeMenus, selectedOptions) {
         const texts = [];
 
+        console.log('=== generateOptionsDisplayText 调试 ===');
+        console.log('keuzeMenus:', keuzeMenus);
+        console.log('selectedOptions:', selectedOptions);
+
         Object.entries(selectedOptions).forEach(([keuzeMenuId, selectedOption]) => {
             const keuzeMenu = keuzeMenus[keuzeMenuId];
-            if (!keuzeMenu) return;
+            if (!keuzeMenu) {
+                console.log(`找不到keuzeMenu: ${keuzeMenuId}`);
+                return;
+            }
+
+            console.log(`处理keuzeMenu: ${keuzeMenuId}`, keuzeMenu);
+            console.log(`keuzeMenu.options:`, keuzeMenu.options);
+            console.log(`选中的选项:`, selectedOption);
 
             const getOptionName = (optionId) => {
-                const option = keuzeMenu.options?.find(opt => opt.id === optionId);
-                return option ? option.name : optionId;
+                console.log(`查找选项ID: ${optionId} 在选项列表中:`, keuzeMenu.options);
+
+                if (!keuzeMenu.options || !Array.isArray(keuzeMenu.options)) {
+                    console.log('选项列表不存在或不是数组');
+                    return optionId;
+                }
+
+                const option = keuzeMenu.options.find(opt => {
+                    console.log(`比较选项:`, opt, `opt.id: "${opt.id}" === "${optionId}" ?`, opt.id === optionId);
+                    return opt.id === optionId;
+                });
+
+                console.log(`找到的选项:`, option);
+
+                if (option && option.name) {
+                    console.log(`返回选项名称: "${option.name}"`);
+                    return option.name;
+                } else {
+                    console.log(`未找到选项或选项没有名称，返回ID: "${optionId}"`);
+                    return optionId;
+                }
             };
 
             if (Array.isArray(selectedOption)) {
-                const optionNames = selectedOption.map(getOptionName);
+                // 多选选项
+                console.log('处理多选选项');
+                const optionNames = selectedOption.map(getOptionName).filter(name => name);
+                console.log('多选选项名称列表:', optionNames);
                 if (optionNames.length > 0) {
-                    texts.push(`${keuzeMenu.name}: ${optionNames.join(', ')}`);
+                    // 显示菜单名称和选项名称
+                    const displayText = `${keuzeMenu.name}: ${optionNames.join(', ')}`;
+                    console.log('添加多选文本:', displayText);
+                    texts.push(displayText);
                 }
-            } else {
-                texts.push(`${keuzeMenu.name}: ${getOptionName(selectedOption)}`);
+            } else if (selectedOption) {
+                // 单选选项
+                console.log('处理单选选项');
+                const optionName = getOptionName(selectedOption);
+                console.log('单选选项名称:', optionName);
+
+                if (optionName) {
+                    // 始终显示菜单名称和选项名称的组合
+                    const displayText = `${keuzeMenu.name}: ${optionName}`;
+                    console.log('添加单选文本:', displayText);
+                    texts.push(displayText);
+                }
             }
         });
+
+        console.log('最终生成的文本数组:', texts);
+        console.log('=====================================');
 
         return texts;
     }

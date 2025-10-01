@@ -73,17 +73,20 @@ const cartSlice = createSlice({
 
       if (!existingItem) {
         // Add new item with options
-        const optionsText = generateOptionsText(newItem.selectedOptions);
+        // 优先使用传入的optionsText，如果没有则使用旧的生成方法作为后备
+        const finalOptionsText = newItem.optionsText || generateOptionsText(newItem.selectedOptions);
+
         state.cartItems.push({
           id: newItem.id,
           title: newItem.title,
-          displayTitle: `${newItem.title} ${optionsText}`.trim(),
+          displayTitle: `${newItem.title} ${finalOptionsText ? '(' + (Array.isArray(finalOptionsText) ? finalOptionsText.join(', ') : finalOptionsText) + ')' : ''}`.trim(),
           image01: newItem.image01,
           price: newItem.price,
           basePrice: newItem.basePrice || newItem.price,
           quantity: 1,
           totalPrice: newItem.price,
           selectedOptions: newItem.selectedOptions || {},
+          optionsText: finalOptionsText, // 保存选项文本
           category: newItem.category,
           desc: newItem.desc
         });

@@ -112,9 +112,9 @@ const PizzaDetails = () => {
   };
 
   // Handle modal success
-  const handleModalSuccess = (message, details) => {
-    setSuccessMessage(message);
-    setSuccessDetails(details);
+  const handleModalSuccess = (dishTitle, optionsText) => {
+    setSuccessMessage(`${dishTitle} toegevoegd aan winkelwagen!`);
+    setSuccessDetails(optionsText ? [optionsText] : null);
     setShowSuccessNotification(true);
     setShowOptionsModal(false);
   };
@@ -245,8 +245,8 @@ const PizzaDetails = () => {
         <DishOptionsModal
           dish={dish}
           isOpen={showOptionsModal}
-          onClose={() => setShowOptionsModal(false)}
-          onSuccess={handleModalSuccess}
+          toggle={() => setShowOptionsModal(false)}
+          onAddSuccess={handleModalSuccess}
         />
       )}
 
