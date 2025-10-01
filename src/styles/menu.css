@@ -619,4 +619,46 @@ body:has(.header__shrink) .menu__category-sticky {
         /* 防止移动端自动缩放 */
         padding: 12px 20px;
     }
+
+    /* 移动端分类滚动优化 */
+    .menu__category-scroll {
+        padding: 0.5rem 20px;
+        /* 增加移动端的左右内边距 */
+        gap: 1rem;
+        /* 增加按钮间距 */
+        scroll-snap-type: x proximity;
+        /* 添加滚动贴靠 */
+    }
+
+    .menu__category-btn {
+        padding: 0.8rem 1.5rem;
+        /* 增加移动端按钮内边距 */
+        font-size: 1rem;
+        /* 增加移动端字体大小 */
+        scroll-snap-align: center;
+        /* 滚动时按钮居中对齐 */
+        min-width: 120px;
+        /* 设置最小宽度确保一致性 */
+        justify-content: center;
+        /* 内容居中 */
+    }
+
+    .menu__category-btn i {
+        font-size: 1.1rem;
+        /* 增加移动端图标大小 */
+    }
+}
+
+@media (max-width: 576px) {
+    /* 超小屏幕额外优化 */
+    .menu__category-scroll {
+        padding: 0.5rem 15px;
+        gap: 0.8rem;
+    }
+
+    .menu__category-btn {
+        padding: 0.7rem 1.2rem;
+        font-size: 0.9rem;
+        min-width: 100px;
+    }
 }

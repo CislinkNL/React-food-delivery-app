@@ -78,6 +78,29 @@ const Menu = () => {
         };
     }, []);
 
+    // 处理初始分类按钮滚动定位
+    useEffect(() => {
+        if (!categoriesLoading && categories.length > 0) {
+            // 延迟执行，确保DOM渲染完成
+            setTimeout(() => {
+                const activeButton = document.querySelector(`button.menu__category-btn[data-category="${activeCategory}"]`);
+                if (activeButton) {
+                    const scrollContainer = activeButton.closest('.menu__category-scroll');
+                    if (scrollContainer) {
+                        const buttonOffsetLeft = activeButton.offsetLeft;
+                        const buttonWidth = activeButton.offsetWidth;
+                        const containerWidth = scrollContainer.offsetWidth;
+                        
+                        const targetScrollLeft = buttonOffsetLeft - (containerWidth / 2) + (buttonWidth / 2);
+                        
+                        // 初始定位不使用动画，直接设置
+                        scrollContainer.scrollLeft = Math.max(0, targetScrollLeft);
+                    }
+                }
+            }, 200);
+        }
+    }, [categoriesLoading, categories, activeCategory]);
+
     // 过滤菜单数据（先按类别过滤，再按搜索词过滤）
     const filteredMenuData = menuData.filter(dish => {
         // 类别过滤
@@ -211,6 +234,31 @@ const Menu = () => {
     const handleCategoryClick = (categoryId) => {
         setActiveCategory(categoryId);
         setPageNumber(0); // 重置分页
+        
+        // 在移动端，让点击的按钮滚动到中间位置
+        setTimeout(() => {
+            // 找到被点击的按钮（即将变为active的按钮）
+            const targetButton = document.querySelector(`button.menu__category-btn[data-category="${categoryId}"]`);
+            
+            if (targetButton) {
+                const scrollContainer = targetButton.closest('.menu__category-scroll');
+                if (scrollContainer) {
+                    // 获取按钮在容器中的位置
+                    const buttonOffsetLeft = targetButton.offsetLeft;
+                    const buttonWidth = targetButton.offsetWidth;
+                    const containerWidth = scrollContainer.offsetWidth;
+                    
+                    // 计算让按钮居中所需的滚动位置
+                    const targetScrollLeft = buttonOffsetLeft - (containerWidth / 2) + (buttonWidth / 2);
+                    
+                    // 平滑滚动到目标位置
+                    scrollContainer.scrollTo({
+                        left: Math.max(0, targetScrollLeft),
+                        behavior: 'smooth'
+                    });
+                }
+            }
+        }, 100); // 增加延迟确保状态更新完成
     };
 
     // 处理分页点击
@@ -326,6 +374,7 @@ const Menu = () => {
                                             <button
                                                 key="all"
                                                 className={`menu__category-btn ${activeCategory === "all" ? "active" : ""}`}
+                                                data-category="all"
                                                 onClick={() => handleCategoryClick("all")}
                                             >
                                                 <i className="ri-restaurant-line"></i>
@@ -335,6 +384,7 @@ const Menu = () => {
                                                 <button
                                                     key={category.id}
                                                     className={`menu__category-btn ${activeCategory === category.id ? "active" : ""}`}
+                                                    data-category={category.id}
                                                     onClick={() => handleCategoryClick(category.id)}
                                                 >
                                                     <i className={category.icon || "ri-restaurant-line"}></i>
