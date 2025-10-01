@@ -20,10 +20,63 @@ const Menu = () => {
     const [error, setError] = useState(null);
     const [searchTerm, setSearchTerm] = useState(""); // 添加搜索状态
     const searchInputRef = useRef(null); // 搜索输入框引用
+    const categorySticky = useRef(null); // 分类菜单引用
 
     // 分页配置 - 每页最多25个
     const dishesPerPage = 25;
     const pagesVisited = pageNumber * dishesPerPage;
+
+    // 处理分类菜单的 sticky 定位
+    useEffect(() => {
+        const updateStickyPosition = () => {
+            const headerElement = document.querySelector('.header');
+            const categoryElement = categorySticky.current;
+
+            if (headerElement && categoryElement) {
+                const isHeaderShrunk = headerElement.classList.contains('header__shrink');
+                const topPosition = isHeaderShrunk ? '40px' : '60px';
+
+                categoryElement.style.top = topPosition;
+
+                // 调试输出
+                if (process.env.NODE_ENV === 'development') {
+                    console.log('分类栏位置更新:', {
+                        headerShrunk: isHeaderShrunk,
+                        topPosition: topPosition
+                    });
+                }
+            }
+        };
+
+        const handleScroll = () => {
+            updateStickyPosition();
+        };
+
+        // 初始设置
+        updateStickyPosition();
+
+        // 监听滚动事件
+        window.addEventListener('scroll', handleScroll);
+
+        // 使用 MutationObserver 监听 header 类变化
+        const headerElement = document.querySelector('.header');
+        let observer;
+
+        if (headerElement) {
+            observer = new MutationObserver(updateStickyPosition);
+            observer.observe(headerElement, {
+                attributes: true,
+                attributeFilter: ['class']
+            });
+        }
+
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+            if (observer) {
+                observer.disconnect();
+            }
+        };
+    }, []);
 
     // 过滤菜单数据（先按类别过滤，再按搜索词过滤）
     const filteredMenuData = menuData.filter(dish => {
@@ -266,7 +319,9 @@ const Menu = () => {
                                 </div>
                             ) : (
                                 <div className="menu__category-container">
-                                    <div className="menu__category-sticky">
+                                    {/* 占位空间，防止内容被fixed定位的分类栏遮挡 */}
+                                    <div className="menu__category-spacer"></div>
+                                    <div className="menu__category-sticky" ref={categorySticky}>
                                         <div className="menu__category-scroll">
                                             <button
                                                 key="all"

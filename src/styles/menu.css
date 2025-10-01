@@ -1,7 +1,17 @@
 /* ===== Menu Section Styles ===== */
-.menu__section {
+.menu-section {
     padding: 80px 0;
     background: #f8f9fa;
+}
+
+/* 搜索容器样式 - 避免被分类栏遮挡 */
+.menu__search {
+    margin-top: 10px;
+    /* 为fixed分类栏预留空间 */
+}
+
+.menu__search-title h2 {
+    margin-bottom: 1rem;
 }
 
 .menu__title {
@@ -63,18 +73,33 @@
     width: 100%;
 }
 
+/* 为fixed定位的分类栏预留空间 */
+.menu__category-spacer {
+    height: 0px;
+    /* 增加占位空间到120px，防止内容被分类栏遮挡 */
+    transition: height 0.3s ease;
+}
+
 .menu__category-sticky {
-    position: sticky;
-    top: 100px;
-    /* 导航栏高度 */
+    position: fixed;
+    top: 60px;
+    /* 默认header高度 */
+    left: 0;
+    right: 0;
+    width: 100%;
     background: #f8f9fa;
     padding: 1rem 0;
-    z-index: 100;
+    z-index: 998;
+    /* 略低于header的z-index: 1000 */
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    margin: 0 -15px;
-    padding-left: 15px;
-    padding-right: 15px;
     transition: top 0.3s ease;
+}
+
+/* 当 header 收缩时，调整分类菜单的位置 */
+.header__shrink~* .menu__category-sticky,
+body:has(.header__shrink) .menu__category-sticky {
+    top: 40px;
+    /* 收缩后的导航栏高度 */
 }
 
 .menu__category-scroll {
@@ -82,7 +107,8 @@
     gap: 0.8rem;
     overflow-x: auto;
     overflow-y: hidden;
-    padding: 0.5rem 0;
+    padding: 0.5rem 15px;
+    /* 添加左右内边距 */
     scroll-behavior: smooth;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
@@ -471,18 +497,8 @@
 
 /* 响应式设计改进 */
 @media only screen and (max-width: 768px) {
-    .menu__category-sticky {
-        margin: 0 -15px;
-        padding: 1rem 15px;
-        top: 100px;
-        /* 默认导航栏高度 */
-    }
-
-    /* 当导航栏收缩时调整位置 */
-    .header__shrink~.menu-section .menu__category-sticky,
-    body.header-shrink .menu__category-sticky {
-        top: 80px;
-        /* 收缩后的导航栏高度 */
+    .menu__category-scroll {
+        padding: 0.5rem 15px;
     }
 
     .menu__category-btn {
@@ -497,17 +513,8 @@
 }
 
 @media only screen and (max-width: 576px) {
-    .menu__category-sticky {
-        padding: 0.8rem 10px;
-        top: 100px;
-        /* 默认导航栏高度 */
-    }
-
-    /* 当导航栏收缩时调整位置 */
-    .header__shrink~.menu-section .menu__category-sticky,
-    body.header-shrink .menu__category-sticky {
-        top: 80px;
-        /* 收缩后的导航栏高度 */
+    .menu__category-scroll {
+        padding: 0.5rem 10px;
     }
 
     .menu__category-btn {

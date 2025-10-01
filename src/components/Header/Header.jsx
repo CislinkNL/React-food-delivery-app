@@ -253,12 +253,12 @@ const Header = () => {
           {/* ======== nav right icons ========= */}
           <div className="nav__right d-flex align-items-center gap-4">
             <span className="cart__icon" onClick={toggleCart}>
-              <i className="ri-shopping-basket-line"></i>
+              <i className="ri-shopping-basket-line" style={{ fontSize: '1.7rem' }}></i>
               <span className="cart__badge">{totalQuantity}</span>
             </span>
 
             <span className="mobile__menu" onClick={toggleMenu}>
-              <i className="ri-menu-line"></i>
+              <i className="ri-menu-line" style={{ fontSize: '1.7rem' }}></i>
             </span>
           </div>
         </div>
