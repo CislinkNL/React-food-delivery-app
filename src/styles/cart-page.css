@@ -38,6 +38,15 @@ th {
   font-size: 0.9rem;
 }
 
+.addTOCart__btn a {
+  color: #fff !important;
+  text-decoration: none;
+}
+
+.addTOCart__btn:hover a {
+  color: #fff !important;
+}
+
 @media only screen and (max-width: 768px) {
   th,
   td {

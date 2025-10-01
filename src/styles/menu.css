@@ -666,6 +666,7 @@ body:has(.header__shrink) .menu__category-sticky {
 
 /* ===== 桌面端优化 ===== */
 @media (min-width: 769px) {
+
     /* 桌面端分类菜单样式 */
     .menu__category-scroll {
         display: flex;
