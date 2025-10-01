@@ -82,7 +82,7 @@
 
 .menu__category-sticky {
     position: fixed;
-    top: 60px;
+    top: 80px;
     /* 默认header高度 */
     left: 0;
     right: 0;
@@ -98,7 +98,7 @@
 /* 当 header 收缩时，调整分类菜单的位置 */
 .header__shrink~* .menu__category-sticky,
 body:has(.header__shrink) .menu__category-sticky {
-    top: 40px;
+    top: 60px;
     /* 收缩后的导航栏高度 */
 }
 
@@ -650,6 +650,7 @@ body:has(.header__shrink) .menu__category-sticky {
 }
 
 @media (max-width: 576px) {
+
     /* 超小屏幕额外优化 */
     .menu__category-scroll {
         padding: 0.5rem 15px;
@@ -660,5 +661,47 @@ body:has(.header__shrink) .menu__category-sticky {
         padding: 0.7rem 1.2rem;
         font-size: 0.9rem;
         min-width: 100px;
+    }
+}
+
+/* ===== 桌面端优化 ===== */
+@media (min-width: 769px) {
+    /* 桌面端分类菜单样式 */
+    .menu__category-scroll {
+        display: flex;
+        flex-wrap: wrap;
+        /* 允许换行 */
+        justify-content: center;
+        /* 居中对齐 */
+        gap: 1rem;
+        overflow: visible;
+        /* 取消滚动限制 */
+        padding: 1rem 15px;
+        max-width: 1200px;
+        /* 限制最大宽度 */
+        margin: 0 auto;
+        /* 居中显示 */
+    }
+
+    .menu__category-btn {
+        flex-shrink: 0;
+        padding: 1rem 1.5rem;
+        /* 增加桌面端按钮大小 */
+        font-size: 1rem;
+        min-width: auto;
+        /* 移除最小宽度限制 */
+    }
+
+    .menu__category-btn i {
+        font-size: 1.1rem;
+    }
+
+    /* 桌面端固定定位的分类栏 */
+    .menu__category-sticky {
+        background: rgba(248, 249, 250, 0.95);
+        /* 半透明背景 */
+        backdrop-filter: blur(10px);
+        /* 毛玻璃效果 */
+        -webkit-backdrop-filter: blur(10px);
     }
 }
