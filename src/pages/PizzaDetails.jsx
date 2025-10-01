@@ -79,6 +79,28 @@ const PizzaDetails = () => {
     }
   }, [showSuccessNotification]);
 
+  // Auto-scroll to back button when dish is loaded (mobile-friendly)
+  useEffect(() => {
+    if (dish && !loading) {
+      // 延迟一点时间确保DOM已完全渲染
+      const timer = setTimeout(() => {
+        const backButton = document.getElementById('back-button');
+        if (backButton) {
+          // 使用smooth scrolling并偏移一些像素以确保按钮可见
+          const yOffset = -20; // 向上偏移20px，让按钮不贴边
+          const yPosition = backButton.getBoundingClientRect().top + window.pageYOffset + yOffset;
+          
+          window.scrollTo({
+            top: yPosition,
+            behavior: 'smooth'
+          });
+        }
+      }, 100); // 100ms延迟确保渲染完成
+      
+      return () => clearTimeout(timer);
+    }
+  }, [dish, loading]);
+
   // Check if dish has options (支持新旧两种格式)
   const hasKeuzeMenus = dish && dish.keuzeMenus && Array.isArray(dish.keuzeMenus) && dish.keuzeMenus.length > 0;
   const hasLegacyOptions = dish && dish.options && Object.keys(dish.options).length > 0;
@@ -175,6 +197,7 @@ const PizzaDetails = () => {
           <Row className="mb-4">
             <Col lg="12">
               <button
+                id="back-button"
                 className="btn btn-outline-primary"
                 onClick={handleGoBack}
                 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}
