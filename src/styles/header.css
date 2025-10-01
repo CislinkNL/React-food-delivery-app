@@ -29,6 +29,11 @@
 
 .logo {
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
 }
 
 .logo:hover {
@@ -36,17 +41,34 @@
 }
 
 .logo img {
-  width: calc(100% - 60%);
+  width: auto;
+  max-height: 50px;
   object-fit: contain;
-  margin-top: -40px;
+  margin-top: 0;
+  transition: all 0.3s ease;
+  display: block;
 }
 
 .logo h5 {
   font-weight: 600;
   font-size: 1rem;
   color: #212245;
-  margin-top: -40px;
+  margin-top: 2px;
   margin-bottom: 0;
+  transition: all 0.3s ease;
+  line-height: 1.2;
+  text-align: center;
+}
+
+/* Header收缩时的logo样式 */
+.header__shrink .logo img {
+  margin-top: 0;
+  max-height: 40px;
+}
+
+.header__shrink .logo h5 {
+  margin-top: 2px;
+  font-size: 0.9rem;
 }
 
 .menu a {
@@ -90,13 +112,47 @@
 }
 
 @media only screen and (max-width: 992px) {
+  .header {
+    height: 70px;
+    line-height: 70px;
+  }
+
+  .logo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    padding: 5px 0;
+  }
+
   .logo img {
-    width: calc(100% - 70%);
+    width: auto !important;
+    margin-top: 0 !important;
+    max-height: 35px !important;
+    display: block !important;
+    object-fit: contain !important;
   }
 
   .logo h5 {
-    font-size: 0.8rem;
-    margin-top: -15px;
+    font-size: 0.75rem !important;
+    margin-top: 2px !important;
+    margin-bottom: 0 !important;
+    line-height: 1.2 !important;
+    text-align: center !important;
+  }
+
+  .header__shrink {
+    height: 60px;
+    line-height: 60px;
+  }
+
+  .header__shrink .logo img {
+    max-height: 30px !important;
+  }
+
+  .header__shrink .logo h5 {
+    font-size: 0.7rem !important;
   }
 
   .navigation {
@@ -369,17 +425,29 @@
 
 @media only screen and (max-width: 768px) {
   .header {
-    width: 100%;
-    height: 80px;
-    line-height: 80px;
+    height: 65px;
+    line-height: 65px;
   }
 
   .logo img {
-    margin-top: -70px !important;
+    max-height: 32px !important;
   }
 
   .logo h5 {
-    margin-top: -55px;
+    font-size: 0.7rem !important;
+  }
+
+  .header__shrink {
+    height: 55px;
+    line-height: 55px;
+  }
+
+  .header__shrink .logo img {
+    max-height: 28px !important;
+  }
+
+  .header__shrink .logo h5 {
+    font-size: 0.65rem !important;
   }
 }
 

@@ -89,14 +89,14 @@ const PizzaDetails = () => {
           // 使用smooth scrolling并偏移一些像素以确保图片完全可见
           const yOffset = -80; // 向上偏移80px，给悬浮按钮留出空间
           const yPosition = productImageSection.getBoundingClientRect().top + window.pageYOffset + yOffset;
-          
+
           window.scrollTo({
             top: yPosition,
             behavior: 'smooth'
           });
         }
       }, 200); // 200ms延迟确保渲染完成
-      
+
       return () => clearTimeout(timer);
     }
   }, [dish, loading]);
@@ -191,7 +191,7 @@ const PizzaDetails = () => {
   return (
     <Helmet title={dish.title || "Gerecht Details"}>
       <CommonSection title={dish.title || "Gerecht Details"} />
-      
+
       {/* 悬浮返回按钮 */}
       <button
         id="floating-back-button"
@@ -201,7 +201,7 @@ const PizzaDetails = () => {
       >
         <i className="ri-arrow-left-line"></i>
       </button>
-      
+
       <section>
         <Container>
           <Row>
