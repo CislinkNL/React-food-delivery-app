@@ -79,23 +79,23 @@ const PizzaDetails = () => {
     }
   }, [showSuccessNotification]);
 
-  // Auto-scroll to back button when dish is loaded (mobile-friendly)
+  // Auto-scroll to product image when dish is loaded (mobile-friendly)
   useEffect(() => {
     if (dish && !loading) {
       // 延迟一点时间确保DOM已完全渲染
       const timer = setTimeout(() => {
-        const backButton = document.getElementById('back-button');
-        if (backButton) {
-          // 使用smooth scrolling并偏移一些像素以确保按钮可见
-          const yOffset = -20; // 向上偏移20px，让按钮不贴边
-          const yPosition = backButton.getBoundingClientRect().top + window.pageYOffset + yOffset;
+        const productImageSection = document.getElementById('product-image-section');
+        if (productImageSection) {
+          // 使用smooth scrolling并偏移一些像素以确保图片完全可见
+          const yOffset = -80; // 向上偏移80px，给悬浮按钮留出空间
+          const yPosition = productImageSection.getBoundingClientRect().top + window.pageYOffset + yOffset;
           
           window.scrollTo({
             top: yPosition,
             behavior: 'smooth'
           });
         }
-      }, 100); // 100ms延迟确保渲染完成
+      }, 200); // 200ms延迟确保渲染完成
       
       return () => clearTimeout(timer);
     }
@@ -191,26 +191,22 @@ const PizzaDetails = () => {
   return (
     <Helmet title={dish.title || "Gerecht Details"}>
       <CommonSection title={dish.title || "Gerecht Details"} />
+      
+      {/* 悬浮返回按钮 */}
+      <button
+        id="floating-back-button"
+        className="floating-back-btn"
+        onClick={handleGoBack}
+        title="Terug naar menu"
+      >
+        <i className="ri-arrow-left-line"></i>
+      </button>
+      
       <section>
         <Container>
-          {/* 返回按钮 */}
-          <Row className="mb-4">
-            <Col lg="12">
-              <button
-                id="back-button"
-                className="btn btn-outline-primary"
-                onClick={handleGoBack}
-                style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}
-              >
-                <i className="ri-arrow-left-line"></i>
-                Terug
-              </button>
-            </Col>
-          </Row>
-
           <Row>
             <Col lg="6" md="6">
-              <div className="product__main-img">
+              <div id="product-image-section" className="product__main-img">
                 <img src={previewImg || dish.image01} alt={dish.title} className="w-100" />
               </div>
             </Col>

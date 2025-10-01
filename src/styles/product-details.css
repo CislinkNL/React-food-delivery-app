@@ -131,3 +131,47 @@
     grid-template-columns: repeat(1, 1fr)
   }
 }
+
+/* 悬浮返回按钮样式 */
+.floating-back-btn {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #df2020 0%, #ff4757 100%);
+  color: #fff;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(223, 32, 32, 0.3);
+  transition: all 0.3s ease;
+  font-size: 1.4rem;
+}
+
+.floating-back-btn:hover {
+  background: linear-gradient(135deg, #c41e3a 0%, #e74c3c 100%);
+  transform: translateX(-50%) scale(1.05);
+  box-shadow: 0 6px 20px rgba(223, 32, 32, 0.4);
+  color: #fff;
+}
+
+.floating-back-btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(223, 32, 32, 0.3);
+}
+
+/* 确保在移动端也能正常显示 */
+@media only screen and (max-width: 768px) {
+  .floating-back-btn {
+    width: 55px;
+    height: 55px;
+    bottom: 15px;
+    font-size: 1.3rem;
+  }
+}
